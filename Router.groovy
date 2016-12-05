@@ -17,16 +17,16 @@ def returnResponseFromMeraki() {
 }
 
 def existingApiKey() {
-    def apiKey  = request.getParameter("apiKey")
+    def apiKey  = request.getParameter('apiKey')
     if (apiKey != null) {
-        session().setAttribute("apiKey",apiKey)
+        session().setAttribute('apiKey',apiKey)
         return true
     }
     return apiKeyFromSession() != null
 }
 
 def apiKeyFromSession() {
-    return session().getAttribute("apiKey")
+    return session().getAttribute('apiKey')
 }
 
 def session() {
