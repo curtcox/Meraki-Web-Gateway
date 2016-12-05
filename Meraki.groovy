@@ -2,9 +2,9 @@ import groovy.json.*
 
 class Meraki {
 
-  def get(request) {
+  def get(request,apiKey) {
       def page    = "https://n124.meraki.com/api/v0/$request"
-      def command = "./get.sh $page"
+      def command = "./get.sh $page $apiKey"
       System.err.println(command)
       def text = command.execute().text
       try {

@@ -4,10 +4,12 @@ class MerakiBrowser {
 
   final port
   final request
+  final apiKey
 
-MerakiBrowser(port,request) {
-  this.port = port
+MerakiBrowser(port,request,apiKey) {
+  this.port    = port
   this.request = request
+  this.apiKey  = apiKey
 }
 
 def linkTo(path) {
@@ -81,9 +83,10 @@ def linkForKey(key) {
     return new JsonSlurper().parseText("{ \"$key\" : \"${linkTo(path)}\" }")
 }
 
+
 def response() {
     def command = "${request.pathInfo}?${request.queryString}"
-    return JsonOutput.toJson(transform(new Meraki().get(command)))
+    return JsonOutput.toJson(transform(new Meraki().get(command,apiKey)))
 }
 
 }

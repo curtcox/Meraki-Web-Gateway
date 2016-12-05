@@ -1,13 +1,43 @@
 def port() { return 8080 }
 
-def returnResponseFromMeraki() {
+def returnResponseFromMeraki(apiKey) {
     response.contentType = 'application/json'
     try {
-      println new MerakiBrowser(port(),request).response()
+        println new MerakiBrowser(port(),request,apiKey).response()
     } catch (e) {
-      response.contentType = 'text/html'
-      println e.message
+        response.contentType = 'text/html'
+        println e.message
     }
+}
+
+def returnResponseFromMeraki() {
+  if (existingApiKey()) {
+      return returnResponseFromMeraki(apiKeyFromSession())
+  } else {
+      return promptForApiKey()
+  }
+}
+
+def existingApiKey() {
+    def apiKey  = request.getParameter("apiKey")
+    if (apiKey != null) {
+        session().setAttribute("apiKey",apiKey)
+        return true
+    }
+    return apiKeyFromSession() != null
+}
+
+def apiKeyFromSession() {
+    return session().getAttribute("apiKey")
+}
+
+def session() {
+    return request.getSession()
+}
+
+def promptForApiKey() {
+    response.contentType = 'text/html'
+    println new File('prompt_for_key.html').text
 }
 
 def root() {
