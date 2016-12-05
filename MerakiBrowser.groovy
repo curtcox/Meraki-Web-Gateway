@@ -2,18 +2,21 @@ import groovy.json.*
 
 class MerakiBrowser {
 
-  final port
   final request
   final apiKey
 
-MerakiBrowser(port,request,apiKey) {
-  this.port    = port
+MerakiBrowser(request,apiKey) {
   this.request = request
   this.apiKey  = apiKey
 }
 
 def linkTo(path) {
-    return "http://localhost:$port${path.replaceAll('//','/')}"
+    def server     = request.getServerName()
+    def port       = request.getServerPort()
+    def merakiPath = path.replaceAll('//','/')
+    return port == 80
+        ? "http://$server$merakiPath"
+        : "http://$server:$port$merakiPath"
 }
 
 def transform(object) {

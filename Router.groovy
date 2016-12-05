@@ -1,9 +1,7 @@
-def port() { return 8080 }
-
 def returnResponseFromMeraki(apiKey) {
     response.contentType = 'application/json'
     try {
-        println new MerakiBrowser(port(),request,apiKey).response()
+        println new MerakiBrowser(request,apiKey).response()
     } catch (e) {
         response.contentType = 'text/html'
         println e.message
@@ -45,7 +43,7 @@ def root() {
     println new File('root.html').text
 }
 
-SimpleGroovyServlet.run(port()) { ->
+SimpleGroovyServlet.run(8080) { ->
     if (request.pathInfo=="/")            { root(); return }
     if (request.pathInfo=="/favicon.ico") { return }
     returnResponseFromMeraki()
