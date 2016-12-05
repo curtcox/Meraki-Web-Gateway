@@ -43,8 +43,14 @@ def root() {
     println new File('root.html').text
 }
 
+def api() {
+    response.contentType = 'text/plain'
+    println new File('api.txt').text
+}
+
 SimpleGroovyServlet.run(8080) { ->
     if (request.pathInfo=="/")            { root(); return }
+    if (request.pathInfo=="/api")            { api(); return }
     if (request.pathInfo=="/favicon.ico") { return }
     returnResponseFromMeraki()
 }
