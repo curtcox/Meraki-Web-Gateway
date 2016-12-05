@@ -19,10 +19,11 @@ def linkTo(path) {
         : "http://$server:$port$merakiPath"
 }
 
-def transform(object) {
+def transform(object,command) {
     replaceIdsWithLinks(object)
     def dup = new ArrayList()
     dup.addAll(object)
+    addCommandInfo(dup,command)
     addOrganizationLinks(dup)
     addNetworkLinks(dup)
     return dup
@@ -75,6 +76,10 @@ def addNetworkLinks(object) {
     }
 }
 
+def addCommandInfo(object,command) {
+    object.add(jsonKeyValue("command",command))
+}
+
 def addLinks(object, keys) {
     for (key in keys) {
         object.add(linkForKey(key))
@@ -82,14 +87,17 @@ def addLinks(object, keys) {
 }
 
 def linkForKey(key) {
-    def path = "${request.pathInfo}/$key"
-    return new JsonSlurper().parseText("{ \"$key\" : \"${linkTo(path)}\" }")
+    return jsonKeyValue(key,linkTo("${request.pathInfo}/$key"))
 }
 
+def jsonKeyValue(key,value) {
+    return new JsonSlurper().parseText("{ \"$key\" : \"$value\" }")
+}
 
 def response() {
     def command = "${request.pathInfo}?${request.queryString}"
-    return JsonOutput.toJson(transform(new Meraki().get(command,apiKey)))
+    def meraki  = new Meraki(command,apiKey)
+    return JsonOutput.toJson(transform(meraki.json(),meraki.command()))
 }
 
 }
