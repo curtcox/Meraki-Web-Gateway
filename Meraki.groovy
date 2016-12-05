@@ -15,7 +15,17 @@ class Meraki {
   }
 
   def page() {
-      return "https://n124.meraki.com/api/v0/$request"
+      return "https://n124.meraki.com/api/v0/${scrubbed(request)}"
+  }
+
+  def scrubbed(request) {
+      if (request.startsWith('/')) {
+          request = request.substring(1,request.length())
+      }
+      if (request.endsWith('?null')) {
+          request = request.substring(0,request.length() - 5)
+      }
+      return request
   }
 
   def json() {
