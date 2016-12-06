@@ -11,7 +11,7 @@ class Meraki {
   }
 
   def command() {
-      return "./GET ${page()} $apiKey"
+      return "GET ${page()} $apiKey"
   }
 
   def page() {
@@ -47,15 +47,19 @@ class Meraki {
   }
 
   def json() {
-      def command = command()
-      System.err.println(command)
-      def text = command.execute().text
       try {
-          return new JsonSlurper().parseText(text)
+          return new JsonSlurper().parseText(exec())
       } catch (e) {
           def errorPage = text.replaceAll("page","page (${page()})")
           throw new RuntimeException(errorPage,e)
       }
+  }
+
+  def exec() {
+      def command = command()
+      System.err.println(command)
+      def withPath = "./$command"
+      return withPath.execute().text
   }
 
 }
