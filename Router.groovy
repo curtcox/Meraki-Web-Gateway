@@ -9,33 +9,13 @@ def returnResponseFromMeraki(apiKey) {
 }
 
 def returnResponseFromMeraki() {
-  if (existingApiKey()) {
-      return returnResponseFromMeraki(apiKeyFromSession())
-  } else {
-      return promptForApiKey()
-  }
-}
-
-def existingApiKey() {
-    def apiKey  = request.getParameter('apiKey')
-    if (apiKey != null) {
-        session().setAttribute('apiKey',apiKey)
-        return true
+    def check = new KeyChecker(request)
+    if (check.existingApiKey()) {
+        return returnResponseFromMeraki(check.apiKeyFromSession())
+    } else {
+        response.contentType = 'text/html'
+        println check.promptForApiKey()
     }
-    return apiKeyFromSession() != null
-}
-
-def apiKeyFromSession() {
-    return session().getAttribute('apiKey')
-}
-
-def session() {
-    return request.getSession()
-}
-
-def promptForApiKey() {
-    response.contentType = 'text/html'
-    println new File('prompt_for_key.html').text
 }
 
 def root() {
@@ -43,14 +23,14 @@ def root() {
     println new File('root.html').text
 }
 
-def api() {
+def docs() {
     response.contentType = 'text/plain'
     println new File('api.txt').text
 }
 
 SimpleGroovyServlet.run(8080) { ->
     if (request.pathInfo=="/")            { root(); return }
-    if (request.pathInfo=="/api")            { api(); return }
+    if (request.pathInfo=="/docs")        { docs(); return }
     if (request.pathInfo=="/favicon.ico") { return }
     returnResponseFromMeraki()
 }
