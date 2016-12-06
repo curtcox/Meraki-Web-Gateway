@@ -24,6 +24,7 @@ def transform(object,command) {
     def dup = new ArrayList()
     dup.addAll(object)
     addCommandInfo(dup,command)
+    addDocInfo(dup,command)
     addOrganizationLinks(dup)
     addNetworkLinks(dup)
     return dup
@@ -78,6 +79,10 @@ def addNetworkLinks(object) {
 
 def addCommandInfo(object,command) {
     object.add(jsonKeyValue("command",command))
+}
+
+def addDocInfo(object,command) {
+    object.add(jsonKeyValue("doc",new Docs().forCommand(command)))
 }
 
 def addLinks(object, keys) {
