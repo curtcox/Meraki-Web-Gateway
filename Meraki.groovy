@@ -11,7 +11,7 @@ class Meraki {
   }
 
   def command() {
-      return "./get.sh ${page()} $apiKey"
+      return "./GET ${page()} $apiKey"
   }
 
   def page() {
