@@ -3,7 +3,7 @@ class KeyChecker {
   final request
 
   KeyChecker(request) {
-      this.request  = request
+      this.request = request
   }
 
   def existingApiKey() {

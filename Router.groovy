@@ -25,7 +25,7 @@ def root() {
 
 def docs() {
     response.contentType = 'text/plain'
-    println new File('api.txt').text
+    println new Docs().docs()
 }
 
 SimpleGroovyServlet.run(8080) { ->
