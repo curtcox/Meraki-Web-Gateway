@@ -15,7 +15,7 @@ class Meraki {
   }
 
   def page() {
-      return "https://n124.meraki.com/api/v0/${scrubbed(request)}"
+      return "${scrubbed(request)}"
   }
 
   def scrubbed(request) {
