@@ -19,13 +19,31 @@ class Meraki {
   }
 
   def scrubbed(request) {
-      if (request.startsWith('/')) {
-          request = request.substring(1,request.length())
-      }
-      if (request.endsWith('?null')) {
-          request = request.substring(0,request.length() - 5)
-      }
+      request = deleteInitialSlash(request)
+      request = delete(request,"\\?null")
+      request = deleteApiKey(request)
+      request = deleteFinalQuestionMark(request)
       return request
+  }
+
+  def deleteInitialSlash(request) {
+      return request.startsWith('/')
+          ? request.substring(1,request.length())
+          : request
+  }
+
+  def deleteFinalQuestionMark(request) {
+      return request.endsWith('?')
+          ? request.substring(0,request.length() - 1)
+          : request
+  }
+
+  def deleteApiKey(request) {
+      return delete(request,"apiKey=$apiKey")
+  }
+
+  def delete(request,fragment) {
+      return request.replaceAll(fragment,'')
   }
 
   def json() {
