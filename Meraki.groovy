@@ -2,27 +2,25 @@ import groovy.json.*
 
 class Meraki {
 
-    final request
+    final path
     final apiKey
+    final params
 
-    Meraki(request, apiKey) {
-        this.request = request.replaceAll('//', '/')
+    Meraki(path, params, apiKey) {
+        this.path = path.replaceAll('//', '/')
+        this.params = params
         this.apiKey = apiKey
     }
 
     def command() {
-        if (verb()=='GET') {
+        if (verb() == 'GET') {
             return "${verb()} ${page()} $apiKey"
         }
-        return "${verb()} ${page()} $apiKey ${params()}"
-    }
-
-    def params() {
-        return Input.jsonFor(request)
+        return "${verb()} ${page()} $apiKey ${params}"
     }
 
     def verb() {
-        if (matching('bind','unbind')) {
+        if (matching('bind', 'unbind')) {
             return 'POST'
         }
         return 'GET'
@@ -30,7 +28,7 @@ class Meraki {
 
     def matching(... keys) {
         for (key in keys) {
-            if (request.contains(key)) {
+            if (path.contains(key)) {
                 return true
             }
         }
@@ -38,35 +36,35 @@ class Meraki {
     }
 
     def page() {
-        return "${scrubbed(request)}"
+        return "${scrubbed(path)}"
     }
 
-    def scrubbed(request) {
-        request = deleteInitialSlash(request)
-        request = delete(request, "\\?null")
-        request = deleteApiKey(request)
-        request = deleteFinalQuestionMark(request)
-        return request
+    def scrubbed(path) {
+        path = deleteInitialSlash(path)
+        path = delete(path, "\\?null")
+        path = deleteApiKey(path)
+        path = deleteFinalQuestionMark(path)
+        return path
     }
 
-    def deleteInitialSlash(request) {
-        return request.startsWith('/')
-        ? request.substring(1, request.length())
-        : request
+    def deleteInitialSlash(path) {
+        return path.startsWith('/')
+        ? path.substring(1, path.length())
+        : path
     }
 
-    def deleteFinalQuestionMark(request) {
-        return request.endsWith('?')
-        ? request.substring(0, request.length() - 1)
-        : request
+    def deleteFinalQuestionMark(path) {
+        return path.endsWith('?')
+        ? path.substring(0, path.length() - 1)
+        : path
     }
 
-    def deleteApiKey(request) {
-        return delete(request, "apiKey=$apiKey")
+    def deleteApiKey(path) {
+        return delete(path, "apiKey=$apiKey")
     }
 
-    def delete(request, fragment) {
-        return request.replaceAll(fragment, '')
+    def delete(path, fragment) {
+        return path.replaceAll(fragment, '')
     }
 
     def json() {

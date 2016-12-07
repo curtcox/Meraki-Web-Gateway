@@ -10,7 +10,13 @@ class MerakiBrowser {
         this.request = request
         this.apiKey = apiKey
         def command = "${request.pathInfo}?${request.queryString}"
-        meraki = new Meraki(command, apiKey)
+        def params = jsonParamsFrom(request)
+        meraki = new Meraki(command, params, apiKey)
+    }
+
+    static def jsonParamsFrom(request) {
+        def params = request.getParameterMap()
+        return JsonOutput.toJson(params)
     }
 
     def linkTo(path) {
@@ -115,7 +121,7 @@ class MerakiBrowser {
     }
 
     def inputForParams() {
-        return Input.forParams(['configTemplateId':'N_1234', 'autoBind':false])
+        return Input.forParams(['configTemplateId': 'N_1234', 'autoBind': false])
     }
 
     def transformedMerakiResponse() {
