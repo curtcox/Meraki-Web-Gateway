@@ -10,6 +10,8 @@ if (matching(command,1,'organizations'))            { return 'Return an organiza
 if (matching(command,0,'organizations'))            { return 'List the organizations that the user has privileges on' }
 if (matching(command,2,'organizations','admins'))   { return 'List the dashboard administrators in this organization' }
 if (matching(command,2,'organizations','networks')) { return 'List the networks in an organization' }
+if (matching(command,1,'networks'))                 { return 'Return a network' }
+
 return 'not found'
 
   }

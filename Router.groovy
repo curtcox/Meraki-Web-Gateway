@@ -3,9 +3,26 @@ def returnResponseFromMeraki(apiKey) {
     try {
         println new MerakiBrowser(request,apiKey).response()
     } catch (e) {
-        response.contentType = 'text/html'
-        println e.message
+        showError(e)
     }
+}
+
+def showError(e) {
+    if (e instanceof GroovyRuntimeException) {
+        response.contentType = 'text/plain'
+        println stringFor(e)
+    } else {
+        response.contentType = 'text/html'
+    }
+    println e.message
+    e.printStackTrace()
+}
+
+def stringFor(e) {
+    def writer = new StringWriter()
+    def printer = new PrintWriter(writer)
+    e.printStackTrace(printer)
+    return writer.toString()
 }
 
 def returnResponseFromMeraki() {

@@ -73,7 +73,7 @@ def addOrganizationLinks(object) {
 
 def addNetworkLinks(object) {
     if (onPage('/networks/')) {
-        addLinks(object,['devices', 'siteToSiteVpn', 'traffic?timespan=2592000', 'accessPolicies', 'ssids', 'vlans'])
+        addLinks(object,['devices', 'siteToSiteVpn', 'traffic?timespan=2592000', 'accessPolicies', 'ssids', 'vlans', 'bind', 'unbind'])
     }
 }
 
@@ -82,7 +82,7 @@ def addCommandInfo(object,command) {
 }
 
 def addDocInfo(object,command) {
-    object.add(jsonKeyValue("doc",new Docs().forCommand(command)))
+    object.add(jsonKeyValue("doc",Docs.forCommand(command)))
 }
 
 def addLinks(object, keys) {
