@@ -47,8 +47,9 @@ class Meraki {
   }
 
   def json() {
+      def text = exec()
       try {
-          return new JsonSlurper().parseText(exec())
+          return new JsonSlurper().parseText(text)
       } catch (e) {
           def errorPage = text.replaceAll("page","page (${page()})")
           throw new RuntimeException(errorPage,e)
