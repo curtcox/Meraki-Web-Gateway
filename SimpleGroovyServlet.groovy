@@ -20,7 +20,7 @@ class SimpleGroovyServlet extends HttpServlet {
     }
     static void run(int port, Closure requestHandler) {
         def servlet = new SimpleGroovyServlet(requestHandler: requestHandler)
-        def jetty = new Server(port)
+        def jetty   = new Server(port)
         def context = new Context(jetty, '/', Context.SESSIONS)
         context.addServlet(new ServletHolder(servlet), '/*')
         jetty.start()

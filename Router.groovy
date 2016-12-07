@@ -1,7 +1,8 @@
 def returnResponseFromMeraki(apiKey) {
-    response.contentType = 'application/json'
     try {
-        println new MerakiBrowser(request,apiKey).response()
+        def browser = new MerakiBrowser(request,apiKey)
+        response.contentType = browser.contentType()
+        println browser.response()
     } catch (e) {
         showError(e)
     }

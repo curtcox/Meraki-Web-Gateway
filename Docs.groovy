@@ -11,6 +11,7 @@ if (matching(command,0,'organizations'))            { return 'List the organizat
 if (matching(command,2,'organizations','admins'))   { return 'List the dashboard administrators in this organization' }
 if (matching(command,2,'organizations','networks')) { return 'List the networks in an organization' }
 if (matching(command,1,'networks'))                 { return 'Return a network' }
+if (matching(command,2,'networks','bind'))          { return 'Bind a network to a template' }
 
 return 'not found'
 
