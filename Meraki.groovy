@@ -68,20 +68,22 @@ class Meraki {
     }
 
     def json() {
-        def text = exec()
+        def result = exec()
         try {
-            return new JsonSlurper().parseText(text)
+            return new JsonSlurper().parseText(result)
         } catch (e) {
-            def errorPage = text.replaceAll("page", "page (${page()})")
+            def errorPage = result.replaceAll("page", "page (${page()})")
             throw new RuntimeException(errorPage, e)
         }
     }
 
     def exec() {
         def command = command()
-        System.err.println(command)
+        System.err.println("command=" + command)
         def withPath = "./$command"
-        return withPath.execute().text
+        def result = withPath.execute()
+        def text = result.text
+        return text
     }
 
 }
