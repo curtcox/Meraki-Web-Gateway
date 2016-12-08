@@ -6,8 +6,8 @@ class Input {
 
     static def fields(map) {
         def out = ""
-        map.each { entry ->
-            out = out + field(entry.key, entry.value)
+        map.each { key, value ->
+            out = out + field(key,value)
         }
         out = out + '<input type="submit" value="Submit">'
         return out
