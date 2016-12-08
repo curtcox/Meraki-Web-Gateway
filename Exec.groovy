@@ -13,7 +13,7 @@ class Exec {
 
     static def exec(command) {
         System.err.println("command=" + command)
-        def withPath = "./$command"
+        def withPath = "scripts/$command"
         def result = withPath.execute()
         def text = result.text
         System.err.println("text=" + text)

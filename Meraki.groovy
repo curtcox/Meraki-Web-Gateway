@@ -80,7 +80,7 @@ class Meraki {
     def exec() {
         def command = command()
         System.err.println("command=" + command)
-        def withPath = "./$command"
+        def withPath = "scripts/$command"
         def result = withPath.execute()
         def text = result.text
         return text
