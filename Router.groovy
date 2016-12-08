@@ -38,7 +38,7 @@ def returnResponseFromMeraki() {
 
 def root() {
     response.contentType = 'text/html'
-    println new File('root.html').text
+    println Page.of('root.html')
 }
 
 def docs() {

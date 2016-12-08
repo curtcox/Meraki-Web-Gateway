@@ -24,7 +24,7 @@ class KeyChecker {
   }
 
   def promptForApiKey() {
-      return new File('prompt_for_key.html').text
+      return Page.of('prompt_for_key.html')
   }
 
 }

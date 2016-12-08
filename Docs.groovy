@@ -1,7 +1,7 @@
 class Docs {
 
   static def docs() {
-      return new File('api.txt').text
+      return Page.of('api.txt')
   }
 
   static def forCommand(command) {

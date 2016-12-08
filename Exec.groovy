@@ -1,7 +1,7 @@
 class Exec {
 
     static def prompt(request) {
-        def html = new File('prompt.html').text
+        def html = Page.of('prompt.html')
         def command = request.getParameter("cmd")
         if (command) {
             html = html.replaceAll('command', command.replaceAll('"', '&quot;'))
