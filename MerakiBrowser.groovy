@@ -15,8 +15,16 @@ class MerakiBrowser {
     }
 
     static def jsonParamsFrom(request) {
-        def params = request.getParameterMap()
+        def params = firstValues(request.getParameterMap())
         return JsonOutput.toJson(params)
+    }
+
+    static def firstValues(map) {
+        def out = new HashMap()
+        map.each { key, value ->
+            out.put(key,value[0])
+        }
+        return out
     }
 
     def linkTo(path) {
@@ -87,7 +95,7 @@ class MerakiBrowser {
     }
 
     def addCommandInfo(object, command) {
-        object.add(jsonKeyValue("command", command))
+        object.add(jsonKeyValue("command", command.replaceAll('"',"'")))
     }
 
     def addDocInfo(object, command) {
