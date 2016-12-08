@@ -2,65 +2,88 @@ import groovy.json.*
 
 class Meraki {
 
-  final request
-  final apiKey
+    final path
+    final apiKey
+    final params
 
-  Meraki(request,apiKey) {
-      this.request = request.replaceAll('//','/')
-      this.apiKey  = apiKey
-  }
+    Meraki(path, params, apiKey) {
+        this.path = path.replaceAll('//', '/')
+        this.params = params
+        this.apiKey = apiKey
+    }
 
-  def command() {
-      return "GET ${page()} $apiKey"
-  }
+    def command() {
+        if (verb() == 'GET') {
+            return "${verb()} ${page()} $apiKey"
+        }
+        return "${verb()} ${page()} $apiKey ${params}"
+    }
 
-  def page() {
-      return "${scrubbed(request)}"
-  }
+    def verb() {
+        if (matching('bind', 'unbind')) {
+            return 'POST'
+        }
+        return 'GET'
+    }
 
-  def scrubbed(request) {
-      request = deleteInitialSlash(request)
-      request = delete(request,"\\?null")
-      request = deleteApiKey(request)
-      request = deleteFinalQuestionMark(request)
-      return request
-  }
+    def matching(... keys) {
+        for (key in keys) {
+            if (path.contains(key)) {
+                return true
+            }
+        }
+        return false
+    }
 
-  def deleteInitialSlash(request) {
-      return request.startsWith('/')
-          ? request.substring(1,request.length())
-          : request
-  }
+    def page() {
+        return "${scrubbed(path)}"
+    }
 
-  def deleteFinalQuestionMark(request) {
-      return request.endsWith('?')
-          ? request.substring(0,request.length() - 1)
-          : request
-  }
+    def scrubbed(path) {
+        path = deleteInitialSlash(path)
+        path = delete(path, "\\?null")
+        path = deleteApiKey(path)
+        path = deleteFinalQuestionMark(path)
+        return path
+    }
 
-  def deleteApiKey(request) {
-      return delete(request,"apiKey=$apiKey")
-  }
+    def deleteInitialSlash(path) {
+        return path.startsWith('/')
+        ? path.substring(1, path.length())
+        : path
+    }
 
-  def delete(request,fragment) {
-      return request.replaceAll(fragment,'')
-  }
+    def deleteFinalQuestionMark(path) {
+        return path.endsWith('?')
+        ? path.substring(0, path.length() - 1)
+        : path
+    }
 
-  def json() {
-      def text = exec()
-      try {
-          return new JsonSlurper().parseText(text)
-      } catch (e) {
-          def errorPage = text.replaceAll("page","page (${page()})")
-          throw new RuntimeException(errorPage,e)
-      }
-  }
+    def deleteApiKey(path) {
+        return delete(path, "apiKey=$apiKey")
+    }
 
-  def exec() {
-      def command = command()
-      System.err.println(command)
-      def withPath = "./$command"
-      return withPath.execute().text
-  }
+    def delete(path, fragment) {
+        return path.replaceAll(fragment, '')
+    }
+
+    def json() {
+        def result = exec()
+        try {
+            return new JsonSlurper().parseText(result)
+        } catch (e) {
+            def errorPage = result.replaceAll("page", "page (${page()})")
+            throw new RuntimeException(errorPage, e)
+        }
+    }
+
+    def exec() {
+        def command = command()
+        System.err.println("command=" + command)
+        def withPath = "scripts/$command"
+        def result = withPath.execute()
+        def text = result.text
+        return text
+    }
 
 }

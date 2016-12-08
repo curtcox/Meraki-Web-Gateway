@@ -1,0 +1,1 @@
+curl -L -H "X-Cisco-Meraki-API-Key: $2" -X POST -H'Content-Type: application/json' --data-binary $3 https://n124.meraki.com/api/v0/$1

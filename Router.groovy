@@ -1,7 +1,8 @@
 def returnResponseFromMeraki(apiKey) {
-    response.contentType = 'application/json'
     try {
-        println new MerakiBrowser(request,apiKey).response()
+        def browser = new Gateway(request,apiKey)
+        response.contentType = browser.contentType()
+        println browser.response()
     } catch (e) {
         showError(e)
     }
@@ -37,7 +38,7 @@ def returnResponseFromMeraki() {
 
 def root() {
     response.contentType = 'text/html'
-    println new File('root.html').text
+    println Page.of('root.html')
 }
 
 def docs() {
@@ -45,8 +46,14 @@ def docs() {
     println Docs.docs()
 }
 
+def exec() {
+    response.contentType = 'text/html'
+    println Exec.prompt(request)
+}
+
 SimpleGroovyServlet.run(8080) { ->
     if (request.pathInfo=="/")            { root(); return }
+    if (request.pathInfo=="/exec")        { exec(); return }
     if (request.pathInfo=="/docs")        { docs(); return }
     if (request.pathInfo=="/favicon.ico") { return }
     returnResponseFromMeraki()
