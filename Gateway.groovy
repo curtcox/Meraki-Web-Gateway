@@ -1,12 +1,12 @@
 import groovy.json.*
 
-class MerakiBrowser {
+class Gateway {
 
     final request
     final apiKey
     final meraki
 
-    MerakiBrowser(request, apiKey) {
+    Gateway(request, apiKey) {
         this.request = request
         this.apiKey = apiKey
         def command = "${request.pathInfo}?${request.queryString}"
