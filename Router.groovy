@@ -46,8 +46,14 @@ def docs() {
     println Docs.docs()
 }
 
+def exec() {
+    response.contentType = 'text/html'
+    println Exec.prompt(request)
+}
+
 SimpleGroovyServlet.run(8080) { ->
     if (request.pathInfo=="/")            { root(); return }
+    if (request.pathInfo=="/exec")        { exec(); return }
     if (request.pathInfo=="/docs")        { docs(); return }
     if (request.pathInfo=="/favicon.ico") { return }
     returnResponseFromMeraki()
