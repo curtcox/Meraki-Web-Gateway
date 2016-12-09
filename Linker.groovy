@@ -111,7 +111,13 @@ class Linker {
     }
 
     def inputForParams() {
-        return Input.forParams(['configTemplateId': 'N_1234', 'autoBind': false],'bind')
+        if (onCommand('bind')) {
+            return Input.forParams(['configTemplateId': 'N_1234', 'autoBind': false],'bind')
+        }
+        return Input.forParams([:],'Unknown Command')
     }
 
+    def onCommand(name) {
+        return request.pathInfo.endsWith("/$name")
+    }
 }
