@@ -4,7 +4,7 @@ class Docs {
       return Page.of('api.txt')
   }
 
-  static def forCommand(command) {
+  static def shortTextforCommand(command) {
 
 if (matching(command,1,'organizations'))                   { return 'Return an organization' }
 if (matching(command,0,'organizations'))                   { return 'List the organizations that the user has privileges on' }

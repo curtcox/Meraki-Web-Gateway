@@ -93,7 +93,7 @@ class Linker {
     }
 
     def addDocInfo(object, command) {
-        object.add(jsonKeyValue("doc", Docs.forCommand(command)))
+        object.add(jsonKeyValue("doc", Docs.shortTextforCommand(command)))
     }
 
     def addLinks(object, keys) {
