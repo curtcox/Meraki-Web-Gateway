@@ -15,11 +15,11 @@ class Gateway {
     }
 
     def contentType() {
-        return (infoRequest() || stateChange()) ? 'application/json' : 'text/html'
+        return (infoRequest() || stateChangeRequest()) ? 'application/json' : 'text/html'
     }
 
     def response() {
-        if (stateChangeSetup()) {
+        if (stateChangeSetupRequest()) {
             return linker.inputForParams()
         } else {
             return transformedMerakiResponse()
@@ -34,11 +34,11 @@ class Gateway {
         return request.method == 'GET' && meraki.verb() == 'GET'
     }
 
-    def stateChangeSetup() {
+    def stateChangeSetupRequest() {
         return request.method == 'GET' && meraki.verb() != 'GET'
     }
 
-    def stateChange() {
+    def stateChangeRequest() {
         return request.method != 'GET' && meraki.verb() != 'GET'
     }
 
