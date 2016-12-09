@@ -129,7 +129,7 @@ class Gateway {
     }
 
     def inputForParams() {
-        return Input.forParams(['configTemplateId': 'N_1234', 'autoBind': false])
+        return Input.forParams(['configTemplateId': 'N_1234', 'autoBind': false],'bind')
     }
 
     def transformedMerakiResponse() {
