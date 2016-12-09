@@ -13,16 +13,19 @@ if (matching(command,2,'organizations','networks'))        { return 'List the ne
 if (matching(command,2,'organizations','configTemplates')) { return 'List the configuration templates for this organization' }
 if (matching(command,1,'networks'))                        { return 'Return a network' }
 if (matching(command,2,'networks','bind'))                 { return bind() }
+if (matching(command,2,'networks','unbind'))               { return unbind() }
 return 'not found'
 
     }
 
     static def shortTextforAction(action) {
-        if (action=='bind') { return bind() }
+        if (action=='bind')   { return bind() }
+        if (action=='unbind') { return unbind() }
         return 'not found'
     }
 
-    static def bind() { return 'Bind a network to a template' }
+    static def bind()   { return 'Bind a network to a template' }
+    static def unbind() { return 'Unbind a network from a template' }
 
     static def fullTextForAction(action) {
         def start = shortTextforAction(action)

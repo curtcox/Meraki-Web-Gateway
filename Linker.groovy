@@ -111,9 +111,8 @@ class Linker {
     }
 
     def inputForParams() {
-        if (onCommand('bind')) {
-            return Input.forParams(['configTemplateId': 'N_1234', 'autoBind': false],'bind')
-        }
+        if (onCommand('bind'))   { return Input.forParams(['configTemplateId': 'N_1234', 'autoBind': false],'bind') }
+        if (onCommand('unbind')) { return Input.forParams([:],'unbind') }
         return Input.forParams([:],'Unknown Command')
     }
 

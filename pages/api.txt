@@ -453,7 +453,7 @@ SAMPLE REQUEST
 
 curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -X POST -H'Content-Type: application/json' 'https://dashboard.meraki.com/api/v0/networks/N_2345/unbind'
 Successful HTTP Status: 200
-
+==========
 Return the site-to-site VPN settings of a network. Only valid for MX networks.
 HTTP REQUEST
 
