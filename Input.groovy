@@ -1,10 +1,14 @@
 class Input {
 
     static def forParams(map,action) {
-        return "<html><body>${form(map,action)}</body></html>"
+        return "<html><body>${docs(action)}${form(map,action)}</body></html>"
     }
 
-    static def form(map,action){
+    static def docs(action) {
+        return "<pre>${Docs.fullTextForAction(action)}</pre>"
+    }
+
+    static def form(map,action) {
         return "<form method='post'>${fields(map)} ${submit(action)}</form>"
     }
 

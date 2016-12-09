@@ -441,7 +441,7 @@ SAMPLE REQUEST
 
 curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -X POST -H'Content-Type: application/json' --data-binary '{"configTemplateId":"N_1234", "autoBind":false}' 'https://dashboard.meraki.com/api/v0/networks/N_2345/bind'
 Successful HTTP Status: 200
-
+==========
 Unbind a network from a template.
 HTTP REQUEST
 
