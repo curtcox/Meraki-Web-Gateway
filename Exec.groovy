@@ -16,9 +16,11 @@ class Exec {
         def withPath = "scripts/$command"
         def result = withPath.execute()
         def text = result.text
+        def status = result.exitValue()
         System.err.println("text=" + text)
         return "command=$command\r" +
                 "result=$result\r" +
+                "status=$status\r" +
                 "text=$text\r"
     }
 }
