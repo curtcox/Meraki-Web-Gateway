@@ -11,24 +11,33 @@ if (matching(command,0,'organizations'))                   { return 'List the or
 if (matching(command,2,'organizations','admins'))          { return 'List the dashboard administrators in this organization' }
 if (matching(command,2,'organizations','networks'))        { return 'List the networks in an organization' }
 if (matching(command,2,'organizations','configTemplates')) { return 'List the configuration templates for this organization' }
+if (matching(command,2,'organizations','licenseState'))    { return 'Return the license state for an organization' }
+if (matching(command,2,'organizations','claim'))           { return 'Claim a device, license key, or order into an organization' }
 if (matching(command,1,'networks'))                        { return 'Return a network' }
 if (matching(command,2,'networks','bind'))                 { return bind() }
 if (matching(command,2,'networks','unbind'))               { return unbind() }
+if (matching(command,3,'networks','devices','claim'))      { return claimDevice() }
+
 return 'not found'
 
     }
 
     static def shortTextforAction(action) {
-        if (action=='bind')   { return bind() }
-        if (action=='unbind') { return unbind() }
+        if (action=='bind')          { return bind() }
+        if (action=='unbind')        { return unbind() }
+        if (action=='devices/claim') { return claimDevice() }
         return 'not found'
     }
 
-    static def bind()   { return 'Bind a network to a template' }
-    static def unbind() { return 'Unbind a network from a template' }
+    static def bind()        { return 'Bind a network to a template' }
+    static def unbind()      { return 'Unbind a network from a template' }
+    static def claimDevice() { return 'Claim a device into a network' }
 
     static def fullTextForAction(action) {
         def start = shortTextforAction(action)
+        if (start=='not found') {
+            return "No docs found for $action"
+        }
         def end   = '=========='
         return trimTo(start,end)
     }

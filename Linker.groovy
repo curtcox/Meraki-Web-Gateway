@@ -10,15 +10,22 @@ class Linker {
 
     static def jsonParamsFrom(request) {
         def params = firstValues(request.getParameterMap())
-        return JsonOutput.toJson(params)
+        def json   = JsonOutput.toJson(params)
+        return fixBooleans(json)
     }
 
     static def firstValues(map) {
         def out = new HashMap()
-        map.each { key, value ->
-            out.put(key,value[0])
+        map.each { key, values ->
+            out.put(key,values[0])
         }
         return out
+    }
+
+    static def fixBooleans(json) {
+        json = json.replaceAll('"true"','true')
+        json = json.replaceAll('"false"','false')
+        return json
     }
 
     def linkTo(path) {
@@ -84,7 +91,7 @@ class Linker {
 
     def addNetworkLinks(object) {
         if (onPage('/networks/')) {
-            addLinks(object, ['devices', 'siteToSiteVpn', 'traffic?timespan=2592000', 'accessPolicies', 'ssids', 'vlans', 'bind', 'unbind'])
+            addLinks(object, ['devices', 'devices/claim', 'siteToSiteVpn', 'traffic?timespan=2592000', 'accessPolicies', 'ssids', 'vlans', 'bind', 'unbind'])
         }
     }
 
@@ -111,9 +118,22 @@ class Linker {
     }
 
     def inputForParams() {
-        if (onCommand('bind'))   { return Input.forParams(['configTemplateId': 'N_1234', 'autoBind': false],'bind') }
-        if (onCommand('unbind')) { return Input.forParams([:],'unbind') }
-        return Input.forParams([:],'Unknown Command')
+        for (def entry : commandParamMap()) {
+            def command = entry.key
+            def params = entry.value
+            if (onCommand(command)) {
+                return Input.forParams(params,command)
+            }
+        }
+        return Input.forParams([:],"Unknown Command for ${request.pathInfo}")
+    }
+
+    def commandParamMap() {
+        return [
+                'bind'          : ['configTemplateId': 'N_1234', 'autoBind': false],
+                'unbind'        : [:],
+                'devices/claim' : ['serial': 'Q2XX-XXXX-XXXX']
+        ]
     }
 
     def onCommand(name) {

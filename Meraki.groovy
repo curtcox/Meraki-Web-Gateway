@@ -7,20 +7,20 @@ class Meraki {
     final params
 
     Meraki(path, params, apiKey) {
-        this.path = path.replaceAll('//', '/')
+        this.path = new PathScrubber(path,apiKey).scrubbed()
         this.params = params
         this.apiKey = apiKey
     }
 
     def command() {
         if (verb() == 'GET') {
-            return "${verb()} ${page()} $apiKey"
+            return "${verb()} $path $apiKey"
         }
-        return "${verb()} ${page()} $apiKey ${params}"
+        return "${verb()} $path $apiKey $params"
     }
 
     def verb() {
-        if (matching('bind', 'unbind')) {
+        if (matching('bind', 'unbind', 'claim')) {
             return 'POST'
         }
         return 'GET'
@@ -28,43 +28,11 @@ class Meraki {
 
     def matching(... keys) {
         for (key in keys) {
-            if (path.contains(key)) {
+            if (path.endsWith("/$key")) {
                 return true
             }
         }
         return false
-    }
-
-    def page() {
-        return "${scrubbed(path)}"
-    }
-
-    def scrubbed(path) {
-        path = deleteInitialSlash(path)
-        path = delete(path, "\\?null")
-        path = deleteApiKey(path)
-        path = deleteFinalQuestionMark(path)
-        return path
-    }
-
-    def deleteInitialSlash(path) {
-        return path.startsWith('/')
-        ? path.substring(1, path.length())
-        : path
-    }
-
-    def deleteFinalQuestionMark(path) {
-        return path.endsWith('?')
-        ? path.substring(0, path.length() - 1)
-        : path
-    }
-
-    def deleteApiKey(path) {
-        return delete(path, "apiKey=$apiKey")
-    }
-
-    def delete(path, fragment) {
-        return path.replaceAll(fragment, '')
     }
 
     def json() {
@@ -72,7 +40,7 @@ class Meraki {
         try {
             return new JsonSlurper().parseText(result)
         } catch (e) {
-            def errorPage = result.replaceAll("page", "page (${page()})")
+            def errorPage = result.replaceAll("page", "page ($path)")
             throw new RuntimeException(errorPage, e)
         }
     }
