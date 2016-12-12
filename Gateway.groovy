@@ -1,5 +1,3 @@
-import groovy.json.*
-
 class Gateway {
 
     final request
@@ -27,7 +25,7 @@ class Gateway {
     }
 
     def transformedMerakiResponse() {
-        return JsonOutput.toJson(linker.transform(meraki.json(), meraki.command()))
+        return Json.from(linker.transform(meraki.json(), meraki.command()))
     }
 
     def infoRequest() {

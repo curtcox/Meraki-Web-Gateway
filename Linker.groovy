@@ -1,5 +1,3 @@
-import groovy.json.*
-
 class Linker {
 
     final request
@@ -10,8 +8,8 @@ class Linker {
 
     static def jsonParamsFrom(request) {
         def params = firstValues(request.getParameterMap())
-        def json   = JsonOutput.toJson(params)
-        return fixBooleans(json)
+        def json   = Json.from(params)
+        return Json.fixBooleans(json)
     }
 
     static def firstValues(map) {
@@ -20,12 +18,6 @@ class Linker {
             out.put(key,values[0])
         }
         return out
-    }
-
-    static def fixBooleans(json) {
-        json = json.replaceAll('"true"','true')
-        json = json.replaceAll('"false"','false')
-        return json
     }
 
     def linkTo(path) {
@@ -114,7 +106,7 @@ class Linker {
     }
 
     def jsonKeyValue(key, value) {
-        return new JsonSlurper().parseText("{ \"$key\" : \"$value\" }")
+        return Json.keyValue(key,value)
     }
 
     def inputForParams() {

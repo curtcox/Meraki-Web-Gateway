@@ -1,5 +1,3 @@
-import groovy.json.*
-
 class Meraki {
 
     final path
@@ -38,7 +36,7 @@ class Meraki {
     def json() {
         def result = exec()
         try {
-            return new JsonSlurper().parseText(result)
+            return Json.parse(result)
         } catch (e) {
             def errorPage = result.replaceAll("page", "page ($path)")
             throw new RuntimeException(errorPage, e)
