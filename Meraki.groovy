@@ -36,11 +36,36 @@ class Meraki {
     def json() {
         def result = exec()
         try {
-            return Json.parse(result)
+            return toJson(result)
         } catch (e) {
             def errorPage = result.replaceAll("page", "page ($path)")
             throw new RuntimeException(errorPage, e)
         }
+    }
+
+    def toJson(result) {
+        return Json.parse(body_with_status_inserted(body(result),http_code(result)))
+    }
+
+    def body_with_status_inserted(body,status) {
+        return body.replaceFirst('\\[',"[$status,")
+    }
+
+    def body(result) {
+        return result.substring(0,start_of_status(result))
+    }
+
+    def http_code(result) {
+        def code = result.substring(start_of_status(result))
+        return "{ \"http_code\" : \"$code\"}"
+    }
+
+    def start_of_status(result) {
+        return result.length() - status_length(result)
+    }
+
+    def status_length(result) {
+        return 0
     }
 
     def exec() {
