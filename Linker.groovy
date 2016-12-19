@@ -83,7 +83,7 @@ class Linker {
 
     def addNetworkLinks(object) {
         if (onPage('/networks/')) {
-            addLinks(object, ['devices', 'devices/claim', 'siteToSiteVpn', 'traffic?timespan=2592000', 'accessPolicies', 'ssids', 'vlans', 'bind', 'unbind'])
+            addLinks(object, ['devices', 'devices/claim', 'siteToSiteVpn', 'traffic?timespan=2592000', 'accessPolicies', 'ssids', 'vlans', 'bind', 'unbind', 'delete'])
         }
     }
 
@@ -124,6 +124,7 @@ class Linker {
         return [
                 'bind'          : ['configTemplateId': 'N_1234', 'autoBind': false],
                 'unbind'        : [:],
+                'delete'        : [:],
                 'devices/claim' : ['serial': 'Q2XX-XXXX-XXXX']
         ]
     }

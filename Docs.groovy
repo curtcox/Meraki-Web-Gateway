@@ -16,6 +16,7 @@ if (matching(command,2,'organizations','claim'))           { return 'Claim a dev
 if (matching(command,1,'networks'))                        { return 'Return a network' }
 if (matching(command,2,'networks','bind'))                 { return bind() }
 if (matching(command,2,'networks','unbind'))               { return unbind() }
+if (matching(command,2,'networks','delete'))               { return delete() }
 if (matching(command,3,'networks','devices','claim'))      { return claimDevice() }
 
 return 'not found'
@@ -25,12 +26,14 @@ return 'not found'
     static def shortTextforAction(action) {
         if (action=='bind')          { return bind() }
         if (action=='unbind')        { return unbind() }
+        if (action=='delete')        { return delete() }
         if (action=='devices/claim') { return claimDevice() }
         return 'not found'
     }
 
     static def bind()        { return 'Bind a network to a template' }
     static def unbind()      { return 'Unbind a network from a template' }
+    static def delete()      { return 'Delete a network' }
     static def claimDevice() { return 'Claim a device into a network' }
 
     static def fullTextForAction(action) {

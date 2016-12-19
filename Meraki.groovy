@@ -12,14 +12,35 @@ class Meraki {
 
     def command() {
         if (verb() == 'GET') {
-            return "${verb()} $path $apiKey"
+            return getCommand()
         }
+
+        if (verb() == 'DELETE') {
+            return deleteCommand()
+        }
+
+        return postCommand()
+    }
+
+    def getCommand() {
+        return "${verb()} $path $apiKey"
+    }
+
+    def deleteCommand() {
+        def pathWithoutSuffix = path.substring(0,path.indexOf('/delete'))
+        return "${verb()} $pathWithoutSuffix $apiKey"
+    }
+
+    def postCommand() {
         return "${verb()} $path $apiKey $params"
     }
 
     def verb() {
         if (matching('bind', 'unbind', 'claim')) {
             return 'POST'
+        }
+        if (matching('delete')) {
+            return 'DELETE'
         }
         return 'GET'
     }

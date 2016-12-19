@@ -369,6 +369,7 @@ Successful HTTP Status: 200
   "timeZone": "US/Pacific",
   "tags": null
 }
+==========
 Update a network
 HTTP REQUEST
 
@@ -393,6 +394,7 @@ Successful HTTP Status: 200
   "timeZone": "US/Pacific",
   "tags": " tag1 tag2 "
 }
+==========
 Create a network
 HTTP REQUEST
 
@@ -418,6 +420,7 @@ Successful HTTP Status: 201
   "timeZone": "US/Pacific",
   "tags": " tag1 tag2 "
 }
+==========
 Delete a network
 HTTP REQUEST
 

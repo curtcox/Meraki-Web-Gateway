@@ -1,0 +1,1 @@
+./scripts/meraki $1 $2 -X DELETE
