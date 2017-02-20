@@ -1,8 +1,8 @@
 class Gateway {
 
     final request
-    final meraki
-    final linker
+    final Meraki meraki
+    final Linker linker
 
     Gateway(request, apiKey) {
         this.request = request

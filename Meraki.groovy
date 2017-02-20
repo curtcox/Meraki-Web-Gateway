@@ -1,41 +1,21 @@
 class Meraki {
 
-    final path
-    final apiKey
+    final String path
     final params
+    final MerakiHttp http
 
     Meraki(path, params, apiKey) {
-        this.path = new PathScrubber(path,apiKey).scrubbed()
+        System.out.println("$path $params $apiKey")
+        this.path   = new PathScrubber(path,apiKey).scrubbed()
         this.params = params
-        this.apiKey = apiKey
+        this.http   = new MerakiHttp(apiKey)
     }
 
-    def command() {
-        if (verb() == 'GET') {
-            return getCommand()
-        }
-
-        if (verb() == 'DELETE') {
-            return deleteCommand()
-        }
-
-        return postCommand()
+    String deletePath() {
+        path.substring(0,path.indexOf('/delete'))
     }
 
-    def getCommand() {
-        return "${verb()} $path $apiKey"
-    }
-
-    def deleteCommand() {
-        def pathWithoutSuffix = path.substring(0,path.indexOf('/delete'))
-        return "${verb()} $pathWithoutSuffix $apiKey"
-    }
-
-    def postCommand() {
-        return "${verb()} $path $apiKey $params"
-    }
-
-    def verb() {
+    String verb() {
         if (matching('bind', 'unbind', 'claim')) {
             return 'POST'
         }
@@ -72,7 +52,7 @@ class Meraki {
         return body.replaceFirst('\\[',"[$status,")
     }
 
-    def body(result) {
+    String body(result) {
         return result.substring(0,start_of_status(result))
     }
 
@@ -85,17 +65,32 @@ class Meraki {
         return result.length() - status_length(result)
     }
 
-    def status_length(result) {
+    int status_length(result) {
         return 0
     }
 
-    def exec() {
-        def command = command()
-        System.err.println("command=" + command)
-        def withPath = "scripts/$command"
-        def result = withPath.execute()
-        def text = result.text
-        return text
+    String command() {
+        if (verb() == 'GET') {
+            return "GET $path"
+        }
+
+        if (verb() == 'DELETE') {
+            return "DELETE ${deletePath()}"
+        }
+
+        return "POST $path $params"
+    }
+
+    String exec() {
+        if (verb() == 'GET') {
+            return http.get(path)
+        }
+
+        if (verb() == 'DELETE') {
+            return http.delete(deletePath())
+        }
+
+        return http.post(path,params)
     }
 
 }
