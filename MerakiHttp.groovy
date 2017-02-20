@@ -8,27 +8,31 @@ class MerakiHttp {
     }
 
     def post(url,json) {
-        makeRequest('POST',relative(url), json)
+        makeRequest('POST',url,json)
     }
 
     def put(url,json) {
-        makeRequest('PUT',relative(url), json)
+        makeRequest('PUT',url,json)
     }
 
     def get(url) {
-        makeRequest('GET',relative(url), null)
+        makeRequest('GET',url,null)
     }
 
     def delete(url) {
-        makeRequest('DELETE',relative(url), null)
+        makeRequest('DELETE',url,null)
     }
 
     def relative(url) {
         'https://n124.meraki.com/api/v0/' + url
     }
 
-    String makeRequest(action, urlString, json) {
-        println "HTTP $action $urlString $json"
+    String makeRequest(verb,url,json) {
+        makeAbsoluteRequest(verb,relative(url),json)
+    }
+
+    String makeAbsoluteRequest(action, urlString, json) {
+        println "HTTP $action $urlString $json $merakiApiKey"
         final url = new URL(urlString)
         final connection = url.openConnection()
         connection.setRequestProperty('X-Cisco-Meraki-API-Key', merakiApiKey)
