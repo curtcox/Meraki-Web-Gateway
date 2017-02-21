@@ -1,10 +1,10 @@
 class MerakiHttp {
 
-    final String merakiApiKey
+    final String apiKey
     final Http http = new Http()
 
-    MerakiHttp(merakiApiKey) {
-        this.merakiApiKey = merakiApiKey
+    MerakiHttp(apiKey) {
+        this.apiKey = apiKey
     }
 
     def post(url,json) {
@@ -35,7 +35,7 @@ class MerakiHttp {
         println "HTTP $action $urlString $json $merakiApiKey"
         final url = new URL(urlString)
         final connection = url.openConnection()
-        connection.setRequestProperty('X-Cisco-Meraki-API-Key', merakiApiKey)
+        connection.setRequestProperty('X-Cisco-Meraki-API-Key', apiKey)
         connection.setRequestMethod(action)
         if (json!=null) {
             connection.setRequestProperty('Content-Type', 'application/json')

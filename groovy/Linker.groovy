@@ -1,6 +1,8 @@
+import javax.servlet.http.*
+
 class Linker {
 
-    final request
+    final HttpServletRequest request
 
     Linker(request) {
         this.request = request

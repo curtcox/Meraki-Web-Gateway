@@ -1,6 +1,8 @@
+import javax.servlet.http.*
+
 class Gateway {
 
-    final request
+    final HttpServletRequest request
     final Meraki meraki
     final Linker linker
 
