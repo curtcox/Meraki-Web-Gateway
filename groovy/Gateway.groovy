@@ -5,6 +5,7 @@ class Gateway {
     final String method
     final Meraki meraki
     final Linker linker
+    final MimeTypeComputer typeComputer
 
     static Gateway of(request, apiKey) {
         def method = request.method
@@ -12,13 +13,15 @@ class Gateway {
         def params = Json.paramsFrom(request)
         def meraki = new Meraki(command, params, apiKey)
         def linker = new Linker(request)
-        new Gateway(method,meraki,linker)
+        def typeComputer = new MimeTypeComputer()
+        new Gateway(method,meraki,linker,typeComputer)
     }
 
-    Gateway(method,meraki,linker) {
+    Gateway(method,meraki,linker,typeComputer) {
         this.method = method
         this.meraki = meraki
         this.linker = linker
+        this.typeComputer = typeComputer
     }
 
     def contentType() {

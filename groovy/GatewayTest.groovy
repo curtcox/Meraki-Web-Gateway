@@ -2,10 +2,11 @@ import javax.servlet.http.*
 
 class GatewayTest extends Test {
 
-     final String              apiKey = 'bogus'
-     final HttpServletRequest request = Mock(HttpServletRequest)
-     final Meraki              meraki = Mock(Meraki)
-     final Linker              linker = Mock(Linker)
+     final String                 apiKey = 'bogus'
+     final HttpServletRequest    request = Mock(HttpServletRequest)
+     final Meraki                 meraki = Mock(Meraki)
+     final Linker                 linker = Mock(Linker)
+     final MimeTypeComputer typeComputer = Mock(MimeTypeComputer)
 
      def "Gateway can be made"() {
          given:
@@ -33,4 +34,32 @@ class GatewayTest extends Test {
          meraki.http.apiKey == apiKey
      }
 
+     def "contentType returns text/html for state change setup (entry forms)"() {
+         when:
+         def gateway = new Gateway('GET',meraki,linker,typeComputer)
+         def type = gateway.contentType()
+
+         then:
+         1 * meraki.verb() >> 'POST'
+
+         expect:
+         type == 'text/html'
+     }
+
+     def "contentType consults MimeTypeComputer with Meraki response for Meraki requests"() {
+         def merakiResponse = 'this stuff'
+         def computedType = 'whatever'
+
+         when:
+         def gateway = new Gateway('GET',meraki,linker,typeComputer)
+         def type = gateway.contentType()
+
+         then:
+         1 * meraki.verb() >> 'GET'
+         1 * meraki.json() >> merakiResponse
+         1 * typeComputer.compute(merakiResponse) >> computedType
+
+         expect:
+         type == computedType
+     }
 }
