@@ -3,9 +3,15 @@ import javax.servlet.http.*
 class Linker {
 
     final HttpServletRequest request
+    final Json json
 
     Linker(request) {
+        this(request,new Json())
+    }
+
+    Linker(request,json) {
         this.request = request
+        this.json = json
     }
 
     def linkTo(path) {
@@ -94,7 +100,7 @@ class Linker {
     }
 
     def jsonKeyValue(key, value) {
-        return Json.keyValue(key,value)
+        return json.keyValue(key,value)
     }
 
     def inputForParams() {
