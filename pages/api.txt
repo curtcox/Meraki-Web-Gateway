@@ -297,6 +297,7 @@ Successful HTTP Status: 200
   "lanIp":"1.2.3.4"
   "tags":" recently-added "
 }
+==========
 Claim a device into a network
 HTTP REQUEST
 
@@ -308,7 +309,7 @@ SAMPLE REQUEST
 
 curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -X POST -H'Content-Type: application/json' --data-binary '{"serial":"Q2XX-XXXX-XXXX"}' 'https://dashboard.meraki.com/api/v0/networks/[networkId]/devices/claim'
 Successful HTTP Status: 201
-
+==========
 Remove a single device
 HTTP REQUEST
 
@@ -368,6 +369,7 @@ Successful HTTP Status: 200
   "timeZone": "US/Pacific",
   "tags": null
 }
+==========
 Update a network
 HTTP REQUEST
 
@@ -392,6 +394,7 @@ Successful HTTP Status: 200
   "timeZone": "US/Pacific",
   "tags": " tag1 tag2 "
 }
+==========
 Create a network
 HTTP REQUEST
 
@@ -417,6 +420,7 @@ Successful HTTP Status: 201
   "timeZone": "US/Pacific",
   "tags": " tag1 tag2 "
 }
+==========
 Delete a network
 HTTP REQUEST
 
@@ -441,7 +445,7 @@ SAMPLE REQUEST
 
 curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -X POST -H'Content-Type: application/json' --data-binary '{"configTemplateId":"N_1234", "autoBind":false}' 'https://dashboard.meraki.com/api/v0/networks/N_2345/bind'
 Successful HTTP Status: 200
-
+==========
 Unbind a network from a template.
 HTTP REQUEST
 
@@ -453,7 +457,7 @@ SAMPLE REQUEST
 
 curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -X POST -H'Content-Type: application/json' 'https://dashboard.meraki.com/api/v0/networks/N_2345/unbind'
 Successful HTTP Status: 200
-
+==========
 Return the site-to-site VPN settings of a network. Only valid for MX networks.
 HTTP REQUEST
 
@@ -690,6 +694,7 @@ Successful HTTP Status: 201
   "id":1234,
   "name":"Your cloned org"
 }
+==========
 Claim a device, license key, or order into an organization. When claiming by order, all devices and licenses in the order will be claimed; licenses will be added to the organization and devices will be placed in the organization's inventory. These three types of claims are mutually exclusive and cannot be performed in one request.
 HTTP REQUEST
 
@@ -704,7 +709,7 @@ SAMPLE REQUEST
 
 curl -L -H 'X-Cisco-Meraki-API-Key: <key>' -X POST -H'Content-Type: application/json' --data-binary '{"order":"4CXXXXXXX"}' 'https://dashboard.meraki.com/api/v0/organizations/[id]/claim'
 Successful HTTP Status: 200
-
+==========
 Return the license state for an organization
 HTTP REQUEST
 
@@ -726,6 +731,7 @@ Successful HTTP Status: 200
     "MS": 100
   }
 }
+==========
 Return the inventory for an organization
 HTTP REQUEST
 

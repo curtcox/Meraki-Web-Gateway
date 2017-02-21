@@ -2,7 +2,7 @@
 A web server that provides a hyperlinked version of the Meraki API JSON.
 
 # Requirements
-Groovy and curl need to be available for the gateway server to run.
+Groovy 2.0+ need to be available for the gateway server to run.
 
 # Run
 Use start_server.sh to run it.  

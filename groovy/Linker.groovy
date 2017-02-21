@@ -1,30 +1,11 @@
-import groovy.json.*
+import javax.servlet.http.*
 
-class Gateway {
+class Linker {
 
-    final request
-    final apiKey
-    final meraki
+    final HttpServletRequest request
 
-    Gateway(request, apiKey) {
+    Linker(request) {
         this.request = request
-        this.apiKey = apiKey
-        def command = "${request.pathInfo}?${request.queryString}"
-        def params = jsonParamsFrom(request)
-        meraki = new Meraki(command, params, apiKey)
-    }
-
-    static def jsonParamsFrom(request) {
-        def params = firstValues(request.getParameterMap())
-        return JsonOutput.toJson(params)
-    }
-
-    static def firstValues(map) {
-        def out = new HashMap()
-        map.each { key, value ->
-            out.put(key,value[0])
-        }
-        return out
     }
 
     def linkTo(path) {
@@ -90,7 +71,7 @@ class Gateway {
 
     def addNetworkLinks(object) {
         if (onPage('/networks/')) {
-            addLinks(object, ['devices', 'siteToSiteVpn', 'traffic?timespan=2592000', 'accessPolicies', 'ssids', 'vlans', 'bind', 'unbind'])
+            addLinks(object, ['devices', 'devices/claim', 'siteToSiteVpn', 'traffic?timespan=2592000', 'accessPolicies', 'ssids', 'vlans', 'bind', 'unbind', 'delete'])
         }
     }
 
@@ -99,7 +80,7 @@ class Gateway {
     }
 
     def addDocInfo(object, command) {
-        object.add(jsonKeyValue("doc", Docs.forCommand(command)))
+        object.add(jsonKeyValue("doc", Docs.shortTextforCommand(command)))
     }
 
     def addLinks(object, keys) {
@@ -113,39 +94,30 @@ class Gateway {
     }
 
     def jsonKeyValue(key, value) {
-        return new JsonSlurper().parseText("{ \"$key\" : \"$value\" }")
-    }
-
-    def contentType() {
-        return (infoRequest() || stateChange()) ? 'application/json' : 'text/html'
-    }
-
-    def response() {
-        if (stateChangeSetup()) {
-            return inputForParams()
-        } else {
-            return transformedMerakiResponse()
-        }
+        return Json.keyValue(key,value)
     }
 
     def inputForParams() {
-        return Input.forParams(['configTemplateId': 'N_1234', 'autoBind': false])
+        for (def entry : commandParamMap()) {
+            def command = entry.key
+            def params = entry.value
+            if (onCommand(command)) {
+                return Input.forParams(params,command)
+            }
+        }
+        return Input.forParams([:],"Unknown Command for ${request.pathInfo}")
     }
 
-    def transformedMerakiResponse() {
-        return JsonOutput.toJson(transform(meraki.json(), meraki.command()))
+    def commandParamMap() {
+        return [
+                'bind'          : ['configTemplateId': 'N_1234', 'autoBind': false],
+                'unbind'        : [:],
+                'delete'        : [:],
+                'devices/claim' : ['serial': 'Q2XX-XXXX-XXXX']
+        ]
     }
 
-    def infoRequest() {
-        return request.method == 'GET' && meraki.verb() == 'GET'
+    def onCommand(name) {
+        return request.pathInfo.endsWith("/$name")
     }
-
-    def stateChangeSetup() {
-        return request.method == 'GET' && meraki.verb() != 'GET'
-    }
-
-    def stateChange() {
-        return request.method != 'GET' && meraki.verb() != 'GET'
-    }
-
 }
