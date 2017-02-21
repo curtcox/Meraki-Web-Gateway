@@ -1,8 +1,8 @@
 def returnResponseFromMeraki(apiKey) {
     try {
-        def browser = new Gateway(request,apiKey)
-        response.contentType = browser.contentType()
-        println browser.response()
+        def gateway = new Gateway(request,apiKey)
+        response.contentType = gateway.contentType()
+        println gateway.response()
     } catch (e) {
         showError(e)
     }
