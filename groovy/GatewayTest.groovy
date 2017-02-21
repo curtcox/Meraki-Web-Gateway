@@ -9,7 +9,7 @@ class GatewayTest extends Test {
 
      def "Gateway can be made"() {
          given:
-         def gateway = new Gateway(request,apiKey)
+         def gateway = Gateway.of(request,apiKey)
 
          expect:
          gateway instanceof Gateway
@@ -17,7 +17,7 @@ class GatewayTest extends Test {
 
      def "Gateway constructs linker with given request"() {
          given:
-         def gateway = new Gateway(request,apiKey)
+         def gateway = Gateway.of(request,apiKey)
          def linker  = gateway.linker
 
          expect:
@@ -26,7 +26,7 @@ class GatewayTest extends Test {
 
      def "Gateway constructs Meraki correctly"() {
          given:
-         def gateway = new Gateway(request,apiKey)
+         def gateway = Gateway.of(request,apiKey)
          def meraki  = gateway.meraki
 
          expect:

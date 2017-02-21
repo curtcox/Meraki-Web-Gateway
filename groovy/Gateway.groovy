@@ -2,20 +2,27 @@ import javax.servlet.http.*
 
 class Gateway {
 
-    final HttpServletRequest request
+    final String method
     final Meraki meraki
     final Linker linker
 
-    Gateway(request, apiKey) {
-        this.request = request
+    static Gateway of(request, apiKey) {
+        def method = request.method
         def command = "${request.pathInfo}?${request.queryString}"
         def params = Linker.jsonParamsFrom(request)
-        meraki = new Meraki(command, params, apiKey)
-        linker = new Linker(request)
+        def meraki = new Meraki(command, params, apiKey)
+        def linker = new Linker(request)
+        new Gateway(method,meraki,linker)
+    }
+
+    Gateway(method,meraki,linker) {
+        this.method = method
+        this.meraki = meraki
+        this.linker = linker
     }
 
     def contentType() {
-        return (infoRequest() || stateChangeRequest()) ? 'application/json' : 'text/html'
+        (infoRequest() || stateChangeRequest()) ? 'application/json' : 'text/html'
     }
 
     def response() {
@@ -27,19 +34,19 @@ class Gateway {
     }
 
     def transformedMerakiResponse() {
-        return Json.from(linker.transform(meraki.json(), meraki.command()))
+        Json.from(linker.transform(meraki.json(), meraki.command()))
     }
 
     def infoRequest() {
-        return request.method == 'GET' && meraki.verb() == 'GET'
+        method == 'GET' && meraki.verb() == 'GET'
     }
 
     def stateChangeSetupRequest() {
-        return request.method == 'GET' && meraki.verb() != 'GET'
+        method == 'GET' && meraki.verb() != 'GET'
     }
 
     def stateChangeRequest() {
-        return request.method != 'GET' && meraki.verb() != 'GET'
+        method != 'GET' && meraki.verb() != 'GET'
     }
 
 }

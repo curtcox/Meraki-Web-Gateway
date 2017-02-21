@@ -32,7 +32,7 @@ class MerakiHttp {
     }
 
     String makeAbsoluteRequest(action, urlString, json) {
-        println "HTTP $action $urlString $json $merakiApiKey"
+        println "HTTP $action $urlString $json $apiKey"
         final url = new URL(urlString)
         final connection = url.openConnection()
         connection.setRequestProperty('X-Cisco-Meraki-API-Key', apiKey)
