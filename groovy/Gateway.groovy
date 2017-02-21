@@ -6,38 +6,49 @@ class Gateway {
     final Meraki meraki
     final Linker linker
     final MimeTypeComputer typeComputer
+    final Json json
+    def String recordedResponse
 
     static Gateway of(request, apiKey) {
         def method = request.method
         def command = "${request.pathInfo}?${request.queryString}"
-        def params = Json.paramsFrom(request)
+        def json   = new Json()
+        def params = json.paramsFrom(request)
         def meraki = new Meraki(command, params, apiKey)
         def linker = new Linker(request)
         def typeComputer = new MimeTypeComputer()
-        new Gateway(method,meraki,linker,typeComputer)
+        new Gateway(method,meraki,linker,typeComputer,json)
     }
 
-    Gateway(method,meraki,linker,typeComputer) {
+    Gateway(method,meraki,linker,typeComputer,json) {
         this.method = method
         this.meraki = meraki
         this.linker = linker
         this.typeComputer = typeComputer
+        this.json = json
     }
 
     def contentType() {
-        (infoRequest() || stateChangeRequest()) ? 'application/json' : 'text/html'
+        stateChangeSetupRequest() ? 'text/html' : typeComputer.compute(response())
     }
 
     def response() {
+        if (recordedResponse==null) {
+            recordResponse()
+        }
+        recordedResponse
+    }
+
+    def recordResponse() {
         if (stateChangeSetupRequest()) {
-            return linker.inputForParams()
+            recordedResponse = linker.inputForParams()
         } else {
-            return transformedMerakiResponse()
+            recordedResponse = transformedMerakiResponse()
         }
     }
 
     def transformedMerakiResponse() {
-        Json.from(linker.transform(meraki.json(), meraki.command()))
+        json.from(linker.transform(meraki.parsedJson(), meraki.command()))
     }
 
     def infoRequest() {

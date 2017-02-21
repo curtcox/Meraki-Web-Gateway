@@ -6,6 +6,7 @@ class GatewayTest extends Test {
      final HttpServletRequest    request = Mock(HttpServletRequest)
      final Meraki                 meraki = Mock(Meraki)
      final Linker                 linker = Mock(Linker)
+     final Json                     json = Mock(Json)
      final MimeTypeComputer typeComputer = Mock(MimeTypeComputer)
 
      def "Gateway can be made"() {
@@ -36,7 +37,7 @@ class GatewayTest extends Test {
 
      def "contentType returns text/html for state change setup (entry forms)"() {
          when:
-         def gateway = new Gateway('GET',meraki,linker,typeComputer)
+         def gateway = new Gateway('GET',meraki,linker,typeComputer,json)
          def type = gateway.contentType()
 
          then:
@@ -47,17 +48,24 @@ class GatewayTest extends Test {
      }
 
      def "contentType consults MimeTypeComputer with Meraki response for Meraki requests"() {
-         def merakiResponse = 'this stuff'
+         def response = 'from Meraki'
          def computedType = 'whatever'
+         def command = 'devices'
+         def object = []
+         def linkedObject = ['link']
+         def linkedJson = '[link]'
 
          when:
-         def gateway = new Gateway('GET',meraki,linker,typeComputer)
+         def gateway = new Gateway('GET',meraki,linker,typeComputer,json)
          def type = gateway.contentType()
 
          then:
-         1 * meraki.verb() >> 'GET'
-         1 * meraki.json() >> merakiResponse
-         1 * typeComputer.compute(merakiResponse) >> computedType
+             meraki.verb() >> 'GET'
+         1 * meraki.parsedJson()                >> object
+         1 * meraki.command()                   >> command
+         1 * linker.transform(object,command)   >> linkedObject
+         1 * json.from(linkedObject)            >> linkedJson
+         1 * typeComputer.compute(linkedJson)   >> computedType
 
          expect:
          type == computedType

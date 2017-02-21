@@ -13,11 +13,11 @@ class Linker {
         def port = request.getServerPort()
         def merakiPath = path.replaceAll('//', '/')
         return port == 80
-        ? "http://$server$merakiPath"
-        : "http://$server:$port$merakiPath"
+            ? "http://$server$merakiPath"
+            : "http://$server:$port$merakiPath"
     }
 
-    def transform(object, command) {
+    ArrayList transform(object, command) {
         replaceIdsWithLinks(object)
         def dup = new ArrayList()
         dup.addAll(object)

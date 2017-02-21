@@ -34,39 +34,40 @@ class Meraki {
         return false
     }
 
-    def json() {
+    def parsedJson() {
         def result = exec()
         try {
-            return toJson(result)
+            return parsedJson(result)
         } catch (e) {
             def errorPage = result.replaceAll("page", "page ($path)")
             throw new RuntimeException(errorPage, e)
         }
     }
 
-    def toJson(result) {
-        return Json.parse(body_with_status_inserted(body(result),http_code(result)))
+    def parsedJson(result) {
+        def parser =  new Json()
+        parser.parse(body_with_status_inserted(body(result),http_code(result)))
     }
 
     def body_with_status_inserted(body,status) {
-        return body.replaceFirst('\\[',"[$status,")
+        body.replaceFirst('\\[',"[$status,")
     }
 
     String body(result) {
-        return result.substring(0,start_of_status(result))
+        result.substring(0,start_of_status(result))
     }
 
     def http_code(result) {
         def code = result.substring(start_of_status(result))
-        return "{ \"http_code\" : \"$code\"}"
+        "{ \"http_code\" : \"$code\"}"
     }
 
     def start_of_status(result) {
-        return result.length() - status_length(result)
+        result.length() - status_length(result)
     }
 
     int status_length(result) {
-        return 0
+        0
     }
 
     String command() {
@@ -78,7 +79,7 @@ class Meraki {
             return "DELETE ${deletePath()}"
         }
 
-        return "POST $path $params"
+        "POST $path $params"
     }
 
     String exec() {
@@ -90,7 +91,7 @@ class Meraki {
             return http.delete(deletePath())
         }
 
-        return http.post(path,params)
+        http.post(path,params)
     }
 
 }
