@@ -23,4 +23,18 @@ class Json {
         return new JsonSlurper().parseText(text)
     }
 
+    static def paramsFrom(request) {
+        def params = firstValues(request.getParameterMap())
+        def json   = from(params)
+        return fixBooleans(json)
+    }
+
+    static def firstValues(map) {
+        def out = new HashMap()
+        map.each { key, values ->
+            out.put(key,values[0])
+        }
+        return out
+    }
+
 }

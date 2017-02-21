@@ -9,7 +9,7 @@ class Gateway {
     static Gateway of(request, apiKey) {
         def method = request.method
         def command = "${request.pathInfo}?${request.queryString}"
-        def params = Linker.jsonParamsFrom(request)
+        def params = Json.paramsFrom(request)
         def meraki = new Meraki(command, params, apiKey)
         def linker = new Linker(request)
         new Gateway(method,meraki,linker)

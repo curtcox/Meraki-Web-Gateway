@@ -8,20 +8,6 @@ class Linker {
         this.request = request
     }
 
-    static def jsonParamsFrom(request) {
-        def params = firstValues(request.getParameterMap())
-        def json   = Json.from(params)
-        return Json.fixBooleans(json)
-    }
-
-    static def firstValues(map) {
-        def out = new HashMap()
-        map.each { key, values ->
-            out.put(key,values[0])
-        }
-        return out
-    }
-
     def linkTo(path) {
         def server = request.getServerName()
         def port = request.getServerPort()
