@@ -13,7 +13,7 @@ class Gateway {
         def json   = new Json()
         def params = json.paramsFrom(request)
         def meraki = new Meraki(command, params, apiKey)
-        def linker = new Linker(request)
+        def linker = Linker.of(request)
         new Gateway(method,meraki,linker,json)
     }
 

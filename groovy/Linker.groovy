@@ -2,21 +2,23 @@ import javax.servlet.http.*
 
 class Linker {
 
-    final HttpServletRequest request
+    final String server
+    final int port
+    final String path
     final Json json
 
-    Linker(request) {
-        this(request,new Json())
+    static Linker of(request) {
+        new Linker(request.serverName,request.serverPort,request.pathInfo,new Json())
     }
 
-    Linker(request,json) {
-        this.request = request
+    Linker(server,port,path,json) {
+        this.server = server
+        this.port = port
+        this.path = path
         this.json = json
     }
 
     def linkTo(path) {
-        def server = request.getServerName()
-        def port = request.getServerPort()
         def merakiPath = path.replaceAll('//', '/')
         port == 80
             ? "http://$server$merakiPath"
@@ -42,10 +44,9 @@ class Linker {
     }
 
     def replaceValueWithLink(entry, key, suffix) {
-        def path = request.pathInfo
         def value = entry.value
         if (entry.key == key && !path.endsWith(value.toString())) {
-            def link = "${request.pathInfo}/$value$suffix"
+            def link = "$path/$value$suffix"
             entry.setValue(linkTo(withoutPrefixIfNotNeeded(link)))
         }
     }
@@ -64,7 +65,7 @@ class Linker {
     }
 
     def onPage(page) {
-        request.pathInfo.contains(page) && request.pathInfo.split('/').length == 3
+        path.contains(page) && path.split('/').length == 3
     }
 
     def addOrganizationLinks(object) {
@@ -94,7 +95,7 @@ class Linker {
     }
 
     def linkForKey(key) {
-        jsonKeyValue(key, linkTo("${request.pathInfo}/$key"))
+        jsonKeyValue(key, linkTo("$path/$key"))
     }
 
     def jsonKeyValue(key, value) {
@@ -109,7 +110,7 @@ class Linker {
                 return Input.forParams(params,command)
             }
         }
-        Input.forParams([:],"Unknown Command for ${request.pathInfo}")
+        Input.forParams([:],"Unknown Command for $path")
     }
 
     def commandParamMap() {
@@ -122,6 +123,6 @@ class Linker {
     }
 
     def onCommand(name) {
-        request.pathInfo.endsWith("/$name")
+        path.endsWith("/$name")
     }
 }

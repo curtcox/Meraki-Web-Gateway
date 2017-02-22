@@ -1,12 +1,12 @@
 import javax.servlet.http.*
 
-class GatewayTest extends Test {
+class LinkerTest extends Test {
 
     final HttpServletRequest request = Mock(HttpServletRequest)
 
-    def "Linker can be made"() {
+    def "Linker can be made from factory"() {
         given:
-        def linker = new Linker(request)
+        def linker = Linker.of(request)
 
         expect:
         linker instanceof Linker

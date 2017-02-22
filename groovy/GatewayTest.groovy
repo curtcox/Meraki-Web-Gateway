@@ -16,13 +16,24 @@ class GatewayTest extends Test {
          gateway instanceof Gateway
      }
 
-     def "Gateway constructs linker with given request"() {
-         given:
+     def "Gateway constructs linker with given request info"() {
+         def server  = 's'
+         def port    = 1986
+         def path    = '/foo'
+
+         when:
          def gateway = Gateway.of(request,apiKey)
          def linker  = gateway.linker
 
+         then:
+         request.getServerName() >> server
+         request.getServerPort() >> port
+         request.getPathInfo()   >> path
+
          expect:
-         linker.request == request
+         linker.server == server
+         linker.port   == port
+         linker.path   == path
      }
 
      def "Gateway constructs Meraki correctly"() {
@@ -46,26 +57,36 @@ class GatewayTest extends Test {
          type == 'text/html'
      }
 
-     def "contentType consults MimeTypeComputer with Meraki response for Meraki requests"() {
-         def response = 'from Meraki'
-         def computedType = 'whatever'
-         def command = 'devices'
-         def object = []
-         def linkedObject = ['link']
-         def linkedJson = '[link]'
-
+     def "contentType returns application/json for GET passthrus"() {
          when:
          def gateway = new Gateway('GET',meraki,linker,json)
          def type = gateway.contentType()
 
          then:
-             meraki.verb() >> 'GET'
-         1 * meraki.parsedJson()                >> object
-         1 * meraki.command()                   >> command
-         1 * linker.transform(object,command)   >> linkedObject
-         1 * json.from(linkedObject)            >> linkedJson
+         1 * meraki.verb() >> 'GET'
 
          expect:
-         type == computedType
+         type == 'application/json'
+     }
+
+     def "response returns linked Meraki response"() {
+         def object = ['from Meraki']
+         def command = 'devices'
+         def linkedObject = ['link']
+         def linkedJson = '[link]'
+
+         when:
+         def gateway = new Gateway('GET',meraki,linker,json)
+         def response = gateway.response()
+
+         then:
+         1 * meraki.verb()                    >> 'GET'
+         1 * meraki.parsedJson()              >> object
+         1 * meraki.command()                 >> command
+         1 * linker.transform(object,command) >> linkedObject
+         1 * json.from(linkedObject)          >> linkedJson
+
+         expect:
+         response == linkedJson
      }
 }
