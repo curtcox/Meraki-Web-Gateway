@@ -4,17 +4,40 @@ class Router {
 
     final HttpServletRequest request
     final HttpServletResponse response
+    def apiKey
 
     Router(request,response) {
         this.request = request
         this.response = response
     }
 
-    def returnResponseFromMeraki(apiKey) {
+    def gateway() {
         try {
             def gateway = Gateway.of(request,apiKey)
-            def type = gateway.contentType()
+            def    type = gateway.contentType()
             def content = gateway.response()
+            write(type,content)
+        } catch (e) {
+            showError(e)
+        }
+    }
+
+    def devices() {
+        try {
+            def devices = Devices.of(apiKey)
+            def    type = devices.contentType()
+            def content = devices.response()
+            write(type,content)
+        } catch (e) {
+            showError(e)
+        }
+    }
+
+    def clients() {
+        try {
+            def clients = Clients.of(apiKey)
+            def    type = clients.contentType()
+            def content = clients.response()
             write(type,content)
         } catch (e) {
             showError(e)
@@ -36,15 +59,6 @@ class Router {
         return writer.toString()
     }
 
-    def returnResponseFromMeraki() {
-        def check = new KeyChecker(request)
-        if (check.existingApiKey()) {
-            return returnResponseFromMeraki(check.apiKeyFromSession())
-        } else {
-            write('text/html',check.promptForApiKey())
-        }
-    }
-
     def root() {
         write('text/html',Page.of('root.html'))
     }
@@ -63,11 +77,20 @@ class Router {
     }
 
     def route() {
-        if (request.pathInfo=="/")            { root(); return }
-        if (request.pathInfo=="/exec")        { exec(); return }
-        if (request.pathInfo=="/docs")        { docs(); return }
-        if (request.pathInfo=="/favicon.ico") { return }
-        returnResponseFromMeraki()
+        def path = request.pathInfo
+        if (path=="/")            { root();    return }
+        if (path=="/exec")        { exec();    return }
+        if (path=="/docs")        { docs();    return }
+        if (path=="/favicon.ico") { return }
+        def check = new KeyChecker(request)
+        if (check.existingApiKey()) {
+            apiKey = check.apiKeyFromSession()
+            if (path=="/devices")     { devices(); return }
+            if (path=="/clients")     { clients(); return }
+            gateway()
+        } else {
+            write('text/html',check.promptForApiKey())
+        }
     }
 
     static def serve(HttpServletRequest request,HttpServletResponse response) {
