@@ -12,36 +12,18 @@ class Router {
     }
 
     def gateway() {
-        try {
-            def gateway = Gateway.of(request,apiKey)
-            def    type = gateway.contentType()
-            def content = gateway.response()
-            write(type,content)
-        } catch (e) {
-            showError(e)
-        }
+        def gateway = Gateway.of(request,apiKey)
+        write(gateway.contentType(),gateway.response())
     }
 
     def devices() {
-        try {
-            def devices = Devices.of(apiKey)
-            def    type = devices.contentType()
-            def content = devices.response()
-            write(type,content)
-        } catch (e) {
-            showError(e)
-        }
+        def devices = Devices.of(apiKey)
+        write(devices.contentType(),devices.response())
     }
 
     def clients() {
-        try {
-            def clients = Clients.of(apiKey)
-            def    type = clients.contentType()
-            def content = clients.response()
-            write(type,content)
-        } catch (e) {
-            showError(e)
-        }
+        def clients = Clients.of(apiKey)
+        write(clients.contentType(),clients.response())
     }
 
     def showError(e) {
@@ -85,9 +67,13 @@ class Router {
         def check = new KeyChecker(request)
         if (check.existingApiKey()) {
             apiKey = check.apiKeyFromSession()
-            if (path=="/devices")     { devices(); return }
-            if (path=="/clients")     { clients(); return }
-            gateway()
+            try {
+                if (path=="/devices")     { devices(); return }
+                if (path=="/clients")     { clients(); return }
+                gateway()
+            } catch (e) {
+                showError(e)
+            }
         } else {
             write('text/html',check.promptForApiKey())
         }
