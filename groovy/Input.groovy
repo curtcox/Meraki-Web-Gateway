@@ -1,19 +1,19 @@
 class Input {
 
     static def forParams(map,action) {
-        return "<html><body>${docs(action)}${form(map,action)}</body></html>"
+        "<html><body>${docs(action)}${form(map,action)}</body></html>"
     }
 
     static def docs(action) {
-        return "<pre>${Docs.fullTextForAction(action)}</pre>"
+        "<pre>${Docs.fullTextForAction(action)}</pre>"
     }
 
     static def form(map,action) {
-        return "<form method='post'>${fields(map)} ${submit(action)}</form>"
+        "<form method='post'>${fields(map)} ${submit(action)}</form>"
     }
 
     static def submit(name) {
-        return "<input type='submit' value='$name'>"
+        "<input type='submit' value='$name'>"
     }
 
     static def fields(map) {
@@ -21,11 +21,11 @@ class Input {
         map.each { key, value ->
             out = out + field(key,value)
         }
-        return out
+        out
     }
 
     static def field(key, value) {
-        return "$key <input type='text' name='$key' value='$value'>"
+        "$key <input type='text' name='$key' value='$value'>"
     }
 
 

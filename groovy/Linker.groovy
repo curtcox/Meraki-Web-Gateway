@@ -18,7 +18,7 @@ class Linker {
         def server = request.getServerName()
         def port = request.getServerPort()
         def merakiPath = path.replaceAll('//', '/')
-        return port == 80
+        port == 80
             ? "http://$server$merakiPath"
             : "http://$server:$port$merakiPath"
     }
@@ -122,6 +122,6 @@ class Linker {
     }
 
     def onCommand(name) {
-        return request.pathInfo.endsWith("/$name")
+        request.pathInfo.endsWith("/$name")
     }
 }
