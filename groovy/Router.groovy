@@ -1,60 +1,77 @@
-def returnResponseFromMeraki(apiKey) {
-    try {
-        def gateway = Gateway.of(request,apiKey)
-        response.contentType = gateway.contentType()
-        println gateway.response()
-    } catch (e) {
-        showError(e)
+import javax.servlet.http.*
+
+class Router {
+
+    final HttpServletRequest request
+    final HttpServletResponse response
+
+    Router(request,response) {
+        this.request = request
+        this.response = response
     }
-}
 
-def showError(e) {
-    if (e instanceof GroovyRuntimeException) {
-        response.contentType = 'text/plain'
-        println stringFor(e)
-    } else {
-        response.contentType = 'text/html'
+    def returnResponseFromMeraki(apiKey) {
+        try {
+            def gateway = Gateway.of(request,apiKey)
+            def type = gateway.contentType()
+            def content = gateway.response()
+            write(type,content)
+        } catch (e) {
+            showError(e)
+        }
     }
-    println e.message
-    e.printStackTrace()
-}
 
-def stringFor(e) {
-    def writer = new StringWriter()
-    def printer = new PrintWriter(writer)
-    e.printStackTrace(printer)
-    return writer.toString()
-}
-
-def returnResponseFromMeraki() {
-    def check = new KeyChecker(request)
-    if (check.existingApiKey()) {
-        return returnResponseFromMeraki(check.apiKeyFromSession())
-    } else {
-        response.contentType = 'text/html'
-        println check.promptForApiKey()
+    def showError(e) {
+        e.printStackTrace()
+        def stack = e instanceof GroovyRuntimeException
+        def type = stack ? 'text/plain' : 'text/html'
+        def content = stack ? stringFor(e) : e.message
+        write(type,content)
     }
-}
 
-def root() {
-    response.contentType = 'text/html'
-    println Page.of('root.html')
-}
+    def stringFor(Throwable t) {
+        def writer = new StringWriter()
+        def printer = new PrintWriter(writer)
+        t.printStackTrace(printer)
+        return writer.toString()
+    }
 
-def docs() {
-    response.contentType = 'text/plain'
-    println Docs.docs()
-}
+    def returnResponseFromMeraki() {
+        def check = new KeyChecker(request)
+        if (check.existingApiKey()) {
+            return returnResponseFromMeraki(check.apiKeyFromSession())
+        } else {
+            write('text/html',check.promptForApiKey())
+        }
+    }
 
-def exec() {
-    response.contentType = 'text/html'
-    println Exec.prompt(request)
-}
+    def root() {
+        write('text/html',Page.of('root.html'))
+    }
 
-SimpleGroovyServlet.run(8080) { ->
-    if (request.pathInfo=="/")            { root(); return }
-    if (request.pathInfo=="/exec")        { exec(); return }
-    if (request.pathInfo=="/docs")        { docs(); return }
-    if (request.pathInfo=="/favicon.ico") { return }
-    returnResponseFromMeraki()
+    def docs() {
+        write('text/plain',Docs.docs())
+    }
+
+    def exec() {
+        write('text/html',Exec.prompt(request))
+    }
+
+    def write(contentType,content) {
+        response.contentType = contentType
+        response.writer.println content
+    }
+
+    def route() {
+        if (request.pathInfo=="/")            { root(); return }
+        if (request.pathInfo=="/exec")        { exec(); return }
+        if (request.pathInfo=="/docs")        { docs(); return }
+        if (request.pathInfo=="/favicon.ico") { return }
+        returnResponseFromMeraki()
+    }
+
+    static def serve(HttpServletRequest request,HttpServletResponse response) {
+        def router = new Router(request,response)
+        router.route()
+    }
 }

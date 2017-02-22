@@ -5,12 +5,17 @@ class LinkerTest extends Test {
     final HttpServletRequest request = Mock(HttpServletRequest)
 
     def "Linker can be made from factory"() {
-        given:
+        def server = 'big iron'
+
+        when:
         def linker = Linker.of(request)
+
+        then:
+        request.getServerName() >> server
 
         expect:
         linker instanceof Linker
-        linker.request == request
+        linker.server == server
     }
 
 }

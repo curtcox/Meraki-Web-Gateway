@@ -1,2 +1,2 @@
 cd groovy
-groovy Router.groovy
+groovy Server.groovy
