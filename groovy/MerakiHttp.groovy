@@ -27,11 +27,11 @@ class MerakiHttp {
         'https://n124.meraki.com/api/v0/' + url
     }
 
-    String makeRequest(verb,url,json) {
+    HttpResponse makeRequest(verb,url,json) {
         makeAbsoluteRequest(verb,relative(url),json)
     }
 
-    String makeAbsoluteRequest(action, urlString, json) {
+    HttpResponse makeAbsoluteRequest(action, urlString, json) {
         println "HTTP $action $urlString $json $apiKey"
         final url = new URL(urlString)
         final connection = url.openConnection()

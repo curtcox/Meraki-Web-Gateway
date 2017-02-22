@@ -2,30 +2,36 @@ import javax.servlet.http.*
 
 class Linker {
 
-    final HttpServletRequest request
+    final String server
+    final int port
+    final String path
+    final Json json
 
-    Linker(request) {
-        this.request = request
+    static Linker of(request) {
+        new Linker(request.serverName,request.serverPort,request.pathInfo,new Json())
+    }
+
+    Linker(server,port,path,json) {
+        this.server = server
+        this.port = port
+        this.path = path
+        this.json = json
     }
 
     def linkTo(path) {
-        def server = request.getServerName()
-        def port = request.getServerPort()
         def merakiPath = path.replaceAll('//', '/')
-        return port == 80
-        ? "http://$server$merakiPath"
-        : "http://$server:$port$merakiPath"
+        port == 80
+            ? "http://$server$merakiPath"
+            : "http://$server:$port$merakiPath"
     }
 
-    def transform(object, command) {
+    ArrayList transform(ArrayList object, command) {
         replaceIdsWithLinks(object)
-        def dup = new ArrayList()
-        dup.addAll(object)
-        addCommandInfo(dup, command)
-        addDocInfo(dup, command)
-        addOrganizationLinks(dup)
-        addNetworkLinks(dup)
-        return dup
+        addCommandInfo(object, command)
+        addDocInfo(object, command)
+        addOrganizationLinks(object)
+        addNetworkLinks(object)
+        object
     }
 
     def replaceIdsWithLinks(object) {
@@ -38,10 +44,9 @@ class Linker {
     }
 
     def replaceValueWithLink(entry, key, suffix) {
-        def path = request.pathInfo
         def value = entry.value
         if (entry.key == key && !path.endsWith(value.toString())) {
-            def link = "${request.pathInfo}/$value$suffix"
+            def link = "$path/$value$suffix"
             entry.setValue(linkTo(withoutPrefixIfNotNeeded(link)))
         }
     }
@@ -49,18 +54,18 @@ class Linker {
     def withoutPrefixIfNotNeeded(link) {
         link = trimToBranch(link, '/organizations/', '/networks/')
         link = trimToBranch(link, '/networks/', '/devices/')
-        return link
+        link
     }
 
     def trimToBranch(link, root, branch) {
         if (link.contains(branch) && link.contains(root)) {
             return link.substring(link.indexOf(branch))
         }
-        return link
+        link
     }
 
     def onPage(page) {
-        return request.pathInfo.contains(page) && request.pathInfo.split('/').length == 3
+        path.contains(page) && path.split('/').length == 3
     }
 
     def addOrganizationLinks(object) {
@@ -90,11 +95,11 @@ class Linker {
     }
 
     def linkForKey(key) {
-        return jsonKeyValue(key, linkTo("${request.pathInfo}/$key"))
+        jsonKeyValue(key, linkTo("$path/$key"))
     }
 
     def jsonKeyValue(key, value) {
-        return Json.keyValue(key,value)
+        json.keyValue(key,value)
     }
 
     def inputForParams() {
@@ -105,19 +110,19 @@ class Linker {
                 return Input.forParams(params,command)
             }
         }
-        return Input.forParams([:],"Unknown Command for ${request.pathInfo}")
+        Input.forParams([:],"Unknown Command for $path")
     }
 
     def commandParamMap() {
-        return [
-                'bind'          : ['configTemplateId': 'N_1234', 'autoBind': false],
-                'unbind'        : [:],
-                'delete'        : [:],
-                'devices/claim' : ['serial': 'Q2XX-XXXX-XXXX']
+        [
+            'bind'          : ['configTemplateId': 'N_1234', 'autoBind': false],
+            'unbind'        : [:],
+            'delete'        : [:],
+            'devices/claim' : ['serial': 'Q2XX-XXXX-XXXX']
         ]
     }
 
     def onCommand(name) {
-        return request.pathInfo.endsWith("/$name")
+        path.endsWith("/$name")
     }
 }

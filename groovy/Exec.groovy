@@ -12,7 +12,7 @@ class Exec {
             def result = exec(meraki(request),verb,url,json)
             html = html.replaceAll('result', result)
         }
-        return html
+        html
     }
 
     static def exec(meraki,verb,url,json) {
@@ -21,10 +21,7 @@ class Exec {
         }
         System.err.println("$verb $url $json")
         def result = meraki.makeRequest(verb,url,json)
-        return "verb=$verb\r" +
-               "url=$url\r" +
-               "json=$json\r" +
-               "result=$result\r"
+        "verb=$verb\r url=$url\r json=$json\r result=$result\r"
     }
 
     static MerakiHttp meraki(request) {

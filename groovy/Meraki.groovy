@@ -3,6 +3,7 @@ class Meraki {
     final String path
     final params
     final MerakiHttp http
+    final Json json = new Json()
 
     Meraki(path, params, apiKey) {
         System.out.println("$path $params $apiKey")
@@ -22,7 +23,7 @@ class Meraki {
         if (matching('delete')) {
             return 'DELETE'
         }
-        return 'GET'
+        'GET'
     }
 
     def matching(... keys) {
@@ -31,42 +32,31 @@ class Meraki {
                 return true
             }
         }
-        return false
+        false
     }
 
-    def json() {
+    def parsedJson() {
         def result = exec()
         try {
-            return toJson(result)
+            return parsedJson(result)
         } catch (e) {
-            def errorPage = result.replaceAll("page", "page ($path)")
+            def content   = result.content
+            def errorPage = content.replaceAll("page", "page ($path)")
             throw new RuntimeException(errorPage, e)
         }
     }
 
-    def toJson(result) {
-        return Json.parse(body_with_status_inserted(body(result),http_code(result)))
+    def parsedJson(HttpResponse result) {
+        def parser = new Json()
+        def parsed = parser.parse(result.content)
+        def dup = new ArrayList()
+        dup.addAll(parsed)
+        dup.add(jsonKeyValue('status',result.status))
+        dup
     }
 
-    def body_with_status_inserted(body,status) {
-        return body.replaceFirst('\\[',"[$status,")
-    }
-
-    String body(result) {
-        return result.substring(0,start_of_status(result))
-    }
-
-    def http_code(result) {
-        def code = result.substring(start_of_status(result))
-        return "{ \"http_code\" : \"$code\"}"
-    }
-
-    def start_of_status(result) {
-        return result.length() - status_length(result)
-    }
-
-    int status_length(result) {
-        return 0
+    def jsonKeyValue(key, value) {
+        json.keyValue(key,value)
     }
 
     String command() {
@@ -78,10 +68,10 @@ class Meraki {
             return "DELETE ${deletePath()}"
         }
 
-        return "POST $path $params"
+        "POST $path $params"
     }
 
-    String exec() {
+    HttpResponse exec() {
         if (verb() == 'GET') {
             return http.get(path)
         }
@@ -90,7 +80,7 @@ class Meraki {
             return http.delete(deletePath())
         }
 
-        return http.post(path,params)
+        http.post(path,params)
     }
 
 }

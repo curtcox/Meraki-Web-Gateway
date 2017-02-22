@@ -2,39 +2,39 @@ import groovy.json.*
 
 class Json {
 
-    static from(params) {
-        return JsonOutput.toJson(params)
+    def from(params) {
+        JsonOutput.toJson(params)
     }
 
-    static def fixBooleans(json) {
+    def fixBooleans(json) {
         json = json.replaceAll('"true"','true')
         json = json.replaceAll('"false"','false')
-        return json
+        json
     }
 
-    static def keyValue(key, value) {
-        return new JsonSlurper().parseText("{ \"$key\" : \"$value\" }")
+    def keyValue(key, value) {
+        new JsonSlurper().parseText("{ \"$key\" : \"$value\" }")
     }
 
-    static def parse(text) {
+    def parse(text) {
         if (text.trim().isEmpty()) {
             text = "{}"
         }
-        return new JsonSlurper().parseText(text)
+        new JsonSlurper().parseText(text)
     }
 
-    static def paramsFrom(request) {
+    def paramsFrom(request) {
         def params = firstValues(request.getParameterMap())
         def json   = from(params)
-        return fixBooleans(json)
+        fixBooleans(json)
     }
 
-    static def firstValues(map) {
+    def firstValues(map) {
         def out = new HashMap()
         map.each { key, values ->
             out.put(key,values[0])
         }
-        return out
+        out
     }
 
 }

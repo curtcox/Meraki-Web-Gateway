@@ -12,19 +12,19 @@ class KeyChecker {
           session().setAttribute('apiKey',apiKey)
           return true
       }
-      return apiKeyFromSession() != null
+      apiKeyFromSession() != null
   }
 
   def apiKeyFromSession() {
-      return session().getAttribute('apiKey')
+      session().getAttribute('apiKey')
   }
 
   def session() {
-      return request.getSession()
+      request.getSession()
   }
 
   def promptForApiKey() {
-      return Page.of('prompt_for_key.html')
+      Page.of('prompt_for_key.html')
   }
 
 }

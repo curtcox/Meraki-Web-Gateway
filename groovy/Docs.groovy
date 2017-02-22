@@ -28,7 +28,7 @@ return 'not found'
         if (action=='unbind')        { return unbind() }
         if (action=='delete')        { return delete() }
         if (action=='devices/claim') { return claimDevice() }
-        return 'not found'
+        'not found'
     }
 
     static def bind()        { return 'Bind a network to a template' }
@@ -42,24 +42,24 @@ return 'not found'
             return "No docs found for $action"
         }
         def end   = '=========='
-        return trimTo(start,end)
+        trimTo(start,end)
     }
 
     static def trimTo(start,end) {
         def fragment = docs()
         fragment = after(fragment,start)
         fragment = before(fragment,end)
-        return fragment
+        fragment
     }
 
     static def after(text,startText) {
         def start = text.indexOf(startText)
-        return text.substring(start)
+        text.substring(start)
     }
 
     static def before(text,endText) {
         def end = text.indexOf(endText)
-        return text.substring(0,end)
+        text.substring(0,end)
     }
 
     static def matching(command,slashes,... keys) {
@@ -68,7 +68,7 @@ return 'not found'
                 return false
             }
         }
-        return slashes == slashesIn(command)
+        slashes == slashesIn(command)
     }
 
     static def slashesIn(command) {
@@ -78,7 +78,7 @@ return 'not found'
                 counter++
             }
         }
-        return counter
+        counter
     }
 
 }
