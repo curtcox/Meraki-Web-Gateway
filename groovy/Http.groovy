@@ -1,10 +1,12 @@
+import java.net.*
+
 class Http {
 
-    String response(connection) {
-      int status = connection.responseCode
-      (status < 300)
-          ? "${body(connection)}${status}"
-          : "${error(connection)}${status}"
+    HttpResponse response(HttpURLConnection connection) {
+        int status   = connection.responseCode
+        def mimeType = connection.contentType
+        def content  = (status<300) ? body(connection) : error(connection)
+        new HttpResponse(content,mimeType,status)
     }
 
     def body(connection) {

@@ -23,15 +23,13 @@ class Linker {
             : "http://$server:$port$merakiPath"
     }
 
-    ArrayList transform(object, command) {
+    ArrayList transform(ArrayList object, command) {
         replaceIdsWithLinks(object)
-        def dup = new ArrayList()
-        dup.addAll(object)
-        addCommandInfo(dup, command)
-        addDocInfo(dup, command)
-        addOrganizationLinks(dup)
-        addNetworkLinks(dup)
-        return dup
+        addCommandInfo(object, command)
+        addDocInfo(object, command)
+        addOrganizationLinks(object)
+        addNetworkLinks(object)
+        object
     }
 
     def replaceIdsWithLinks(object) {
@@ -55,18 +53,18 @@ class Linker {
     def withoutPrefixIfNotNeeded(link) {
         link = trimToBranch(link, '/organizations/', '/networks/')
         link = trimToBranch(link, '/networks/', '/devices/')
-        return link
+        link
     }
 
     def trimToBranch(link, root, branch) {
         if (link.contains(branch) && link.contains(root)) {
             return link.substring(link.indexOf(branch))
         }
-        return link
+        link
     }
 
     def onPage(page) {
-        return request.pathInfo.contains(page) && request.pathInfo.split('/').length == 3
+        request.pathInfo.contains(page) && request.pathInfo.split('/').length == 3
     }
 
     def addOrganizationLinks(object) {
@@ -96,11 +94,11 @@ class Linker {
     }
 
     def linkForKey(key) {
-        return jsonKeyValue(key, linkTo("${request.pathInfo}/$key"))
+        jsonKeyValue(key, linkTo("${request.pathInfo}/$key"))
     }
 
     def jsonKeyValue(key, value) {
-        return json.keyValue(key,value)
+        json.keyValue(key,value)
     }
 
     def inputForParams() {
@@ -111,15 +109,15 @@ class Linker {
                 return Input.forParams(params,command)
             }
         }
-        return Input.forParams([:],"Unknown Command for ${request.pathInfo}")
+        Input.forParams([:],"Unknown Command for ${request.pathInfo}")
     }
 
     def commandParamMap() {
-        return [
-                'bind'          : ['configTemplateId': 'N_1234', 'autoBind': false],
-                'unbind'        : [:],
-                'delete'        : [:],
-                'devices/claim' : ['serial': 'Q2XX-XXXX-XXXX']
+        [
+            'bind'          : ['configTemplateId': 'N_1234', 'autoBind': false],
+            'unbind'        : [:],
+            'delete'        : [:],
+            'devices/claim' : ['serial': 'Q2XX-XXXX-XXXX']
         ]
     }
 

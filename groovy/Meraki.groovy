@@ -3,6 +3,7 @@ class Meraki {
     final String path
     final params
     final MerakiHttp http
+    final Json json = new Json()
 
     Meraki(path, params, apiKey) {
         System.out.println("$path $params $apiKey")
@@ -22,7 +23,7 @@ class Meraki {
         if (matching('delete')) {
             return 'DELETE'
         }
-        return 'GET'
+        'GET'
     }
 
     def matching(... keys) {
@@ -31,7 +32,7 @@ class Meraki {
                 return true
             }
         }
-        return false
+        false
     }
 
     def parsedJson() {
@@ -39,35 +40,23 @@ class Meraki {
         try {
             return parsedJson(result)
         } catch (e) {
-            def errorPage = result.replaceAll("page", "page ($path)")
+            def content   = result.content
+            def errorPage = content.replaceAll("page", "page ($path)")
             throw new RuntimeException(errorPage, e)
         }
     }
 
-    def parsedJson(result) {
-        def parser =  new Json()
-        parser.parse(body_with_status_inserted(body(result),http_code(result)))
+    def parsedJson(HttpResponse result) {
+        def parser = new Json()
+        def parsed = parser.parse(result.content)
+        def dup = new ArrayList()
+        dup.addAll(parsed)
+        dup.add(jsonKeyValue('status',result.status))
+        dup
     }
 
-    def body_with_status_inserted(body,status) {
-        body.replaceFirst('\\[',"[$status,")
-    }
-
-    String body(result) {
-        result.substring(0,start_of_status(result))
-    }
-
-    def http_code(result) {
-        def code = result.substring(start_of_status(result))
-        "{ \"http_code\" : \"$code\"}"
-    }
-
-    def start_of_status(result) {
-        result.length() - status_length(result)
-    }
-
-    int status_length(result) {
-        0
+    def jsonKeyValue(key, value) {
+        json.keyValue(key,value)
     }
 
     String command() {
@@ -82,7 +71,7 @@ class Meraki {
         "POST $path $params"
     }
 
-    String exec() {
+    HttpResponse exec() {
         if (verb() == 'GET') {
             return http.get(path)
         }
