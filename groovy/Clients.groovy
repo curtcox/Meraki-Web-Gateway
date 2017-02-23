@@ -3,16 +3,17 @@ class Clients {
     final String apiKey
     final Devices devices
     final Json json
-    final int timeSpan = 2592000
+    final int timeSpan
 
-    Clients(devices,apiKey,json) {
-        this.devices = devices
-        this.apiKey  = apiKey
-        this.json    = json
+    Clients(devices,apiKey,json,timeSpan) {
+        this.devices  = devices
+        this.apiKey   = apiKey
+        this.json     = json
+        this.timeSpan = timeSpan
     }
 
-    static Clients of(apiKey) {
-        new Clients(Devices.of(apiKey),apiKey,new Json())
+    static Clients of(apiKey,timeSpan) {
+        new Clients(Devices.of(apiKey),apiKey,new Json(),timeSpan)
     }
 
     def contentType() {

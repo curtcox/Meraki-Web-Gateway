@@ -27,13 +27,19 @@ class Router {
     }
 
     def clients() {
-        def clients = Clients.of(apiKey)
+        def clients = Clients.of(apiKey,timespan())
         write(clients.contentType(),clients.response())
     }
 
     def clientConnections() {
-        def connections = ClientConnections.of(apiKey)
+        def connections = ClientConnections.of(apiKey,timespan())
         write(connections.contentType(),connections.response())
+    }
+
+    int timespan() {
+        def MAX = 60 * 60 * 24 * 30
+        def value = request.getParameter('timespan') as Integer
+        value == null ? MAX : value
     }
 
     def showError(e) {

@@ -6,17 +6,18 @@ class ClientConnections {
     final String apiKey
     final Devices devices
     final Json json
-    final int timeSpan = 2592000
+    final int timeSpan
     Instant start
 
-    ClientConnections(devices,apiKey,json) {
-        this.devices = devices
-        this.apiKey  = apiKey
-        this.json    = json
+    ClientConnections(devices,apiKey,json,timeSpan) {
+        this.devices  = devices
+        this.apiKey   = apiKey
+        this.json     = json
+        this.timeSpan = timeSpan
     }
 
-    static ClientConnections of(apiKey) {
-        new ClientConnections(Devices.of(apiKey),apiKey,new Json())
+    static ClientConnections of(apiKey,timeSpan) {
+        new ClientConnections(Devices.of(apiKey),apiKey,new Json(),timeSpan)
     }
 
     def contentType() {
