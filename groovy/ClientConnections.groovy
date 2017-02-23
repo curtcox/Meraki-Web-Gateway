@@ -27,7 +27,7 @@ class ClientConnections {
         json.from(all())
     }
 
-    def ClientConnection[] all() {
+    def ClientConnectionsSnapshot all() {
         def connections = []
         for (device in devices.all()) {
             def serial = device.serial
@@ -37,14 +37,17 @@ class ClientConnections {
                 }
             }
         }
-        connections
+        new ClientConnectionsSnapshot(timeRange(),connections)
     }
 
     ClientConnection connectionFrom(device,serial,json) {
         def client    = Client.from(serial,json)
         def usage     = new Usage(json.usage.sent,json.usage.recv)
-        def timeRange = new TimeRange(start:start,end:end())
-        new ClientConnection(device:device,client:client,usage:usage,timeRange:timeRange)
+        new ClientConnection(device:device,client:client,usage:usage)
+    }
+
+    def timeRange() {
+        new TimeRange(start:start,end:end())
     }
 
     def clientsFor(serial) {
