@@ -31,6 +31,11 @@ class Router {
         write(clients.contentType(),clients.response())
     }
 
+    def clientConnections() {
+        def connections = ClientConnections.of(apiKey)
+        write(connections.contentType(),connections.response())
+    }
+
     def showError(e) {
         e.printStackTrace()
         def stack = e instanceof GroovyRuntimeException
@@ -73,9 +78,10 @@ class Router {
         if (check.existingApiKey()) {
             apiKey = check.apiKeyFromSession()
             try {
-                if (path=="/networks")    { networks(); return }
-                if (path=="/devices")     { devices(); return }
-                if (path=="/clients")     { clients(); return }
+                if (path=="/networks")          { networks(); return }
+                if (path=="/devices")           { devices(); return }
+                if (path=="/clients")           { clients(); return }
+                if (path=="/clientConnections") { clientConnections(); return }
                 gateway()
             } catch (e) {
                 showError(e)

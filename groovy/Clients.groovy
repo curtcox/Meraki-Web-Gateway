@@ -3,6 +3,7 @@ class Clients {
     final String apiKey
     final Devices devices
     final Json json
+    final int timeSpan = 2592000
 
     Clients(devices,apiKey,json) {
         this.devices = devices
@@ -25,24 +26,18 @@ class Clients {
     def Client[] all() {
         def clients = []
         for (device in devices.all()) {
-            for (json in clientsFor(device.serial,2592000)) {
+            def serial = device.serial
+            for (json in clientsFor(serial)) {
                 if (json.id!=null) {
-                    clients << clientFrom(json)
+                    clients << Client.from(serial,json)
                 }
             }
         }
         clients
     }
 
-    Client clientFrom(json) {
-        new Client(
-            id:json.id,description:json.description,dhcpHostname:json.dhcpHostname,
-            ip:json.ip,mac:json.mac,mdnsName:json.mdnsName,
-            switchport:json.switchport,vlan:json.vlan)
-    }
-
-    def clientsFor(serial,timespan) {
-        def meraki = new Meraki("/devices/$serial/clients?timespan=$timespan",null,apiKey)
+    def clientsFor(serial) {
+        def meraki = new Meraki("/devices/$serial/clients?timespan=$timeSpan",null,apiKey)
         meraki.parsedJson()
     }
 
