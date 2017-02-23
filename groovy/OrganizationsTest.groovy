@@ -1,0 +1,2 @@
+class OrganizationsTest extends Test {
+}

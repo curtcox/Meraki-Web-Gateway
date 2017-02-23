@@ -16,6 +16,11 @@ class Router {
         write(gateway.contentType(),gateway.response())
     }
 
+    def networks() {
+        def networks = Networks.of(apiKey)
+        write(networks.contentType(),networks.response())
+    }
+
     def devices() {
         def devices = Devices.of(apiKey)
         write(devices.contentType(),devices.response())
@@ -68,6 +73,7 @@ class Router {
         if (check.existingApiKey()) {
             apiKey = check.apiKeyFromSession()
             try {
+                if (path=="/networks")    { networks(); return }
                 if (path=="/devices")     { devices(); return }
                 if (path=="/clients")     { clients(); return }
                 gateway()
