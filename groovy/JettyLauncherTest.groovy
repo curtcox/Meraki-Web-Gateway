@@ -1,7 +1,7 @@
 import spock.lang.*
 import javax.servlet.http.*
 
-class JettyLauncherTest extends Test {
+class JettyLauncherTest extends test.Test {
 
     def "create returns Server"() {
         def launcher = new JettyLauncher(2086)

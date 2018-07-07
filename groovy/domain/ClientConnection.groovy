@@ -1,3 +1,5 @@
+package domain
+
 @groovy.transform.Immutable class ClientConnection {
     Device device
     Client client

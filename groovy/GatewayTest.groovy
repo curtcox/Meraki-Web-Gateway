@@ -1,6 +1,6 @@
 import javax.servlet.http.*
 
-class GatewayTest extends Test {
+class GatewayTest extends test.Test {
 
      final String                 apiKey = 'bogus'
      final HttpServletRequest    request = Mock(HttpServletRequest)

@@ -1,3 +1,5 @@
+package domain
+
 class Devices {
 
     final String apiKey
@@ -47,6 +49,6 @@ class Devices {
     }
 
     static main(args) {
-        System.out.println(of(Config.apiKey).all())
+        System.out.println(of(config.Config.apiKey).all())
     }
 }

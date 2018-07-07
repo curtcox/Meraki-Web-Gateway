@@ -1,3 +1,5 @@
+package domain
+
 import java.time.*
 import java.time.temporal.*
 
@@ -62,6 +64,6 @@ class ClientConnections {
     }
 
     static main(args) {
-        System.out.println(of(Config.apiKey).all())
+        System.out.println(of(config.Config.apiKey).all())
     }
 }

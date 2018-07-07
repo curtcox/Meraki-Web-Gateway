@@ -1,3 +1,5 @@
+package domain
+
 @groovy.transform.Immutable class Client {
     String serial, id, description, dhcpHostname, ip, mac, mdnsName, switchport, vlan
 

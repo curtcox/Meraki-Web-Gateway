@@ -1,3 +1,4 @@
+import domain.*
 import javax.servlet.http.*
 
 class Router {

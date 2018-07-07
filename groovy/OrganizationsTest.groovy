@@ -1,2 +1,0 @@
-class OrganizationsTest extends Test {
-}

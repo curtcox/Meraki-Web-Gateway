@@ -1,6 +1,6 @@
 import javax.servlet.http.*
 
-class LinkerTest extends Test {
+class LinkerTest extends test.Test {
 
     final HttpServletRequest request = Mock(HttpServletRequest)
 

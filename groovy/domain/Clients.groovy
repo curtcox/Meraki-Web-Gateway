@@ -1,3 +1,5 @@
+package domain
+
 class Clients {
 
     final String apiKey
@@ -43,6 +45,6 @@ class Clients {
     }
 
     static main(args) {
-        System.out.println(of(Config.apiKey).all())
+        System.out.println(of(config.Config.apiKey).all())
     }
 }

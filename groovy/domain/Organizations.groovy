@@ -1,3 +1,5 @@
+package domain
+
 class Organizations {
 
     final Meraki meraki
@@ -26,6 +28,6 @@ class Organizations {
     }
 
     static main(args) {
-        System.out.println(of(Config.apiKey).all())
+        System.out.println(of(config.Config.apiKey).all())
     }
 }
