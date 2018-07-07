@@ -70,7 +70,7 @@ class Linker {
 
     def addOrganizationLinks(object) {
         if (onPage('/organizations/')) {
-            addLinks(object, ['admins', 'licenseState', 'inventory', 'snmp', 'thirdPartyVPNPeers', 'samlRoles', 'configTemplates', 'networks'])
+            addLinks(object, ['admins', 'deviceStatuses', 'licenseState', 'inventory', 'snmp', 'thirdPartyVPNPeers', 'samlRoles', 'configTemplates', 'networks'])
         }
     }
 
