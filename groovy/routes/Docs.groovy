@@ -1,3 +1,5 @@
+package routes
+
 class Docs {
 
     static def docs() {

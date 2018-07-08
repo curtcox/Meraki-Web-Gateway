@@ -1,3 +1,5 @@
+package routes
+
 class Input {
 
     static def forParams(map,action) {

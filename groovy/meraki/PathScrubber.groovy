@@ -1,3 +1,5 @@
+package meraki
+
 class PathScrubber {
 
     final path

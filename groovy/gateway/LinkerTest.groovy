@@ -1,3 +1,5 @@
+package gateway
+
 import javax.servlet.http.*
 
 class LinkerTest extends test.Test {

@@ -1,3 +1,7 @@
+package routes
+
+import meraki.*
+
 class Exec {
 
     static def prompt(request) {

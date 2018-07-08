@@ -1,3 +1,5 @@
+package routes
+
 class Page {
 
   static def of(name) {

@@ -1,3 +1,5 @@
+package server
+
 import spock.lang.*
 import javax.servlet.http.*
 

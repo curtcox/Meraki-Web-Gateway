@@ -1,3 +1,7 @@
+package gateway
+
+import json.*
+import meraki.*
 import javax.servlet.http.*
 
 class Gateway {

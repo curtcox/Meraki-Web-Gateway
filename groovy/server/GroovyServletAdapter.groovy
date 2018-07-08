@@ -1,3 +1,5 @@
+package server
+
 import groovy.servlet.*
 import javax.servlet.http.*
 import javax.servlet.*

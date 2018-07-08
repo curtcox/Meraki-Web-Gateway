@@ -1,3 +1,7 @@
+package meraki
+
+import http.*
+
 class MerakiHttp {
 
     final String apiKey

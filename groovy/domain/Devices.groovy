@@ -1,5 +1,8 @@
 package domain
 
+import json.*
+import meraki.*
+
 class Devices {
 
     final String apiKey

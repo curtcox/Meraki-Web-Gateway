@@ -1,3 +1,8 @@
+package meraki
+
+import json.*
+import http.*
+
 class Meraki {
 
     final String path

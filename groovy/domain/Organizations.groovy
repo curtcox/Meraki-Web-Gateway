@@ -1,5 +1,7 @@
 package domain
 
+import meraki.*
+
 class Organizations {
 
     final Meraki meraki

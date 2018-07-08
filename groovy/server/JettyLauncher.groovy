@@ -1,3 +1,5 @@
+package server
+
 @Grapes([
     @Grab('org.eclipse.jetty:jetty-server:9.4.0.v20161208'),
     @Grab('org.eclipse.jetty:jetty-servlet:9.4.0.v20161208'),

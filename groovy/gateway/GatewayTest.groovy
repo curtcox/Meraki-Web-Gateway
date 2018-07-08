@@ -1,3 +1,8 @@
+package gateway
+
+import meraki.*
+import gateway.*
+import json.*
 import javax.servlet.http.*
 
 class GatewayTest extends test.Test {
