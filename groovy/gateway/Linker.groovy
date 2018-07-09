@@ -35,6 +35,7 @@ class Linker {
         addDocInfo(object, command)
         addOrganizationLinks(object)
         addNetworkLinks(object)
+        addDevicesLinks(object)
         object
     }
 
@@ -42,7 +43,7 @@ class Linker {
         for (item in object) {
             for (entry in item) {
                 replaceValueWithLink(entry, 'id', '')
-                replaceValueWithLink(entry, 'serial', '/clients?timespan=2592000')
+                replaceValueWithLink(entry, 'serial', '')
             }
         }
     }
@@ -69,18 +70,37 @@ class Linker {
     }
 
     def onPage(page) {
-        path.contains(page) && path.split('/').length == 3
+        def parts = page.split(' ')
+        for (part in parts) {
+          if (!path.contains(part)) {
+            return false
+          }
+        }
+        path.split('/').length == parts.length + 2
     }
 
     def addOrganizationLinks(object) {
         if (onPage('/organizations/')) {
-            addLinks(object, ['admins', 'deviceStatuses', 'licenseState', 'inventory', 'snmp', 'thirdPartyVPNPeers', 'samlRoles', 'configTemplates', 'networks'])
+            addLinks(object,[
+              'admins', 'deviceStatuses', 'licenseState', 'inventory', 'snmp',
+               'thirdPartyVPNPeers', 'samlRoles', 'configTemplates', 'networks'
+            ])
         }
     }
 
     def addNetworkLinks(object) {
         if (onPage('/networks/')) {
-            addLinks(object, ['devices', 'devices/claim', 'siteToSiteVpn', 'traffic?timespan=2592000', 'accessPolicies', 'ssids', 'vlans', 'bind', 'unbind', 'delete'])
+            addLinks(object, [
+              'devices', 'devices/claim', 'siteToSiteVpn',
+              'traffic?timespan=2592000', 'accessPolicies', 'groupPolicies',
+               'ssids', 'vlans', 'bind', 'unbind', 'delete'
+            ])
+        }
+    }
+
+    def addDevicesLinks(object) {
+        if (onPage('/networks/ /devices/')) {
+            addLinks(object, ['performance', 'uplink'])
         }
     }
 
