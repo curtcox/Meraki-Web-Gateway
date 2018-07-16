@@ -86,7 +86,7 @@ class LinkerTest extends test.Test {
       def linker  = Linker.of(request)
       def id      = 88
       def name    = 'Org name'
-      def object  = [[id:id],[name:name]]
+      def object  = [[id:id,name:name]]
       def command = 'GET organizations'
       def out = linker.transform(object, command)
 
@@ -97,8 +97,7 @@ class LinkerTest extends test.Test {
 
       expect:
       out == [
-         [id:      'http://server:8080/organizations/88'],
-         [name:    'Org name'],
+         [id: 'http://server:8080/organizations/88', name: 'Org name'],
          [command: 'GET organizations'],
          [doc:     'List the organizations that the user has privileges on']
       ]
@@ -109,7 +108,7 @@ class LinkerTest extends test.Test {
       def linker  = Linker.of(request)
       def id      = 1007
       def name    = 'MI6'
-      def object  = [[id:id],[name:name]]
+      def object  = [[id:id,name:name]]
       def command = 'GET organizations/1007'
       def out = linker.transform(object, command)
 
@@ -120,8 +119,7 @@ class LinkerTest extends test.Test {
 
       expect:
       out == [
-         [id:                  1007],
-         [name:               'MI6'],
+         [id: 1007, name: 'MI6'],
          [command:            'GET organizations/1007'],
          [doc:                'Return an organization'],
          [admins:             'http://s/organizations/1007/admins'],
@@ -141,7 +139,7 @@ class LinkerTest extends test.Test {
       def linker  = Linker.of(request)
       def id      = 'L_7'
       def name    = '13th floor'
-      def object  = [[id:id],[name:name]]
+      def object  = [[id:id,name:name,organizationId:'O_3']]
       def command = 'GET networks/L_7'
       def out = linker.transform(object, command)
 
@@ -152,8 +150,7 @@ class LinkerTest extends test.Test {
 
       expect:
       out == [
-         [id:                        'L_7'],
-         [name:                      '13th floor'],
+         [id: 'L_7' , name: '13th floor', organizationId:'O_3'],
          [command:                   'GET networks/L_7'],
          [doc:                       'Return a network'],
          [devices:                   'http://s/networks/L_7/devices'],
@@ -167,6 +164,28 @@ class LinkerTest extends test.Test {
          [bind:                      'http://s/networks/L_7/bind'],
          [unbind:                    'http://s/networks/L_7/unbind'],
          [delete:                    'http://s/networks/L_7/delete']
+      ]
+    }
+
+    def "transform adds device specific links on /networks/[networkId]/devices"() {
+      when:
+      def linker  = Linker.of(request)
+      def serial      = 'QXXX-XXXX-XXXX'
+      def networkId    = 'L_8'
+      def object  = [[serial:serial,networkId:networkId]]
+      def command = 'GET networks/L_8/devices'
+      def out = linker.transform(object, command)
+
+      then:
+      request.serverName >> 's'
+      request.pathInfo   >> '/networks/L_8/devices'
+      request.serverPort >> 80
+
+      expect:
+      out == [
+         [serial: 'http://s/networks/L_8/devices/QXXX-XXXX-XXXX', networkId: 'L_8'],
+         [command: 'GET networks/L_8/devices'],
+         [doc:     'List the devices in a network'],
       ]
     }
 
