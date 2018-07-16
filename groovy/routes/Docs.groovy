@@ -16,6 +16,7 @@ if (matching(command,2,'organizations','configTemplates')) { return 'List the co
 if (matching(command,2,'organizations','licenseState'))    { return 'Return the license state for an organization' }
 if (matching(command,2,'organizations','claim'))           { return 'Claim a device, license key, or order into an organization' }
 if (matching(command,1,'networks'))                        { return 'Return a network' }
+if (matching(command,2,'networks','devices'))              { return 'List the devices in a network' }
 if (matching(command,2,'networks','bind'))                 { return bind() }
 if (matching(command,2,'networks','unbind'))               { return unbind() }
 if (matching(command,2,'networks','delete'))               { return delete() }
