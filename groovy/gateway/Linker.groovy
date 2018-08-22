@@ -93,14 +93,18 @@ class Linker {
             addLinks(object, [
               'devices', 'devices/claim', 'siteToSiteVpn',
               'traffic?timespan=2592000', 'accessPolicies', 'groupPolicies',
-               'ssids', 'vlans', 'bind', 'unbind', 'delete'
+               'ssids', 'vlans', 'bind', 'unbind', 'delete',
+               'connectionStats?t0={t0}&t1={t1}','devices/connectionStats?t0={t0}&t1={t1}','latencyStats?t0={t0}&t1={t1}'
             ])
         }
     }
 
     def addDevicesLinks(object) {
         if (onPage('/networks/ /devices/')) {
-            addLinks(object, ['performance', 'uplink'])
+            addLinks(object, [
+              'performance', 'uplink',
+              'connectionStats?t0={t0}&t1={t1}','latencyStats?t0={t0}&t1={t1}'
+            ])
         }
     }
 
