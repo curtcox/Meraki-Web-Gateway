@@ -1,0 +1,33 @@
+digraph G {
+
+"Server" -> "routes"
+
+"gateway" -> "json"
+"gateway" -> "meraki"
+
+"domain" -> "json"
+"domain" -> "meraki"
+"routes" -> "meraki"
+"routes" -> "domain"
+
+subgraph cluster3 {
+ "json" -> "groovy.json"
+}
+
+subgraph cluster1 {
+ "domain" -> "java.time"
+ "domain" -> "groovy.transform"
+}
+
+subgraph cluster2 {
+"routes" -> "gateway"
+"gateway" -> "routes"
+}
+
+subgraph cluster0 {
+ "meraki" -> "json"
+ "meraki" -> "http"
+ "http" -> "java.net"
+}
+
+}

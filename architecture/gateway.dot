@@ -1,0 +1,43 @@
+digraph G {
+
+    "Server" -> "routes"
+
+    "gateway" -> "json"
+    "gateway" -> "meraki"
+
+    "domain" -> "json"
+    "domain" -> "meraki"
+
+    "routes" -> "meraki"
+    "routes" -> "domain"
+
+    "exec" -> "meraki"
+    "linker" -> "json"
+    "linker" -> "routes"
+
+    subgraph cluster4 {
+    "gateway" -> "linker"
+    }
+
+    subgraph cluster3 {
+    "json" -> "groovy.json"
+    }
+
+    subgraph cluster1 {
+    "domain" -> "java.time"
+    "domain" -> "groovy.transform"
+    }
+
+    subgraph cluster2 {
+    "routes" -> "gateway"
+    "routes" -> "exec"
+    }
+
+    subgraph cluster0 {
+    "meraki" -> "json"
+    "meraki" -> "http"
+    "http" -> "java.net"
+    }
+
+
+}
